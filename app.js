@@ -1,7 +1,9 @@
 import * as THREE from './Library/THREE/three.module.js';
 import { OrbitControls } from './Library/THREE/jsm/OrbitControls.js';
 import { VRButton } from './Library/THREE/jsm/VRButton.js';
+import { ARButton } from './Library/THREE/jsm/ARButton.js';
 import { XRControllerModelFactory } from './Library/THREE/jsm/XRControllerModelFactory.js'
+import { ARButton } from './Library/THREE/jsm/ARButton.js';
 
 class App {
     constructor() {
@@ -38,7 +40,7 @@ class App {
         const controls = new OrbitControls(this.camera, this.renderer.domElement);
 
         this.initScene();
-        this.setupVR();
+        this.setupXR();
 
         window.addEventListener('resize', this.resize.bind(this));
     }
@@ -47,8 +49,9 @@ class App {
 
     }
 
-    setupVR() {
+    setupXR() {
         this.renderer.xr.enabled = true;
+        document.body.appendChild(ARButton.createButton(this.renderer));
         document.body.appendChild(VRButton.createButton(this.renderer));
     }
 
