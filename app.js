@@ -35,6 +35,9 @@ class App {
 
         this.mesh = new THREE.Mesh(geometry, material);
 
+        this.mesh.position.set(0, 0, 4);
+        this.mesh.scale.set(0.5, 0.5, 0.5);
+
         this.scene.add(this.mesh);
 
         const controls = new OrbitControls(this.camera, this.renderer.domElement);
