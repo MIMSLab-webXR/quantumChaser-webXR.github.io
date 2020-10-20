@@ -37,6 +37,9 @@ class App {
 
         const controls = new OrbitControls(this.camera, this.renderer.domElement);
 
+        this.initScene();
+        this.setupVR();
+
         window.addEventListener('resize', this.resize.bind(this));
     }
 
