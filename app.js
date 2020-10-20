@@ -29,6 +29,8 @@ class App {
         const geometry = new THREE.BoxBufferGeometry();
         const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
 
+        this.mesh = new THREE.Mesh(geometry, material);
+
         this.scene.add(this.mesh);
 
         const controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -43,7 +45,7 @@ class App {
     }
 
     render() {
-        //this.mesh.rotateY(0.01);
+        this.mesh.rotateY(0.01);
         this.renderer.render(this.scene, this.camera);
     }
 }
