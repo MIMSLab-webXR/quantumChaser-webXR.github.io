@@ -1,5 +1,7 @@
 import * as THREE from './Library/THREE/three.module.js';
 import { OrbitControls } from './Library/THREE/jsm/OrbitControls.js';
+import { VRButton } from './Library/THREE/jsm/VRButton.js';
+import { XRControllerModelFactory } from './Library/THREE/jsm/XRControllerModelFactory.js'
 
 class App {
     constructor() {
