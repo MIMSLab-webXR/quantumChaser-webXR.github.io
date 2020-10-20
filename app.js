@@ -38,6 +38,8 @@ class App {
             bevelEnabled: true
         }
 
+        geometry = new THREE.ExtrudeGeometry(geometry, extrudeSettings);
+
         const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
 
         this.mesh = new THREE.Mesh(geometry, material);
