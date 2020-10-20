@@ -29,7 +29,7 @@ class App {
 
         this.renderer.setAnimationLoop(this.render.bind(this));
 
-        const geometry = new THREE.SphereBufferGeometry(1, 32, 32, 32);
+        const geometry = new THREE.SphereBufferGeometry(1, 50, 50, 50);
 
         const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
 
