@@ -1,2 +1,2 @@
 # quantumChaser-webXR.github.io
-This is just to test a sample test for WebXR testing using Udemy lessons, starting with 2-1.
+Some personal collection of web-based AR and VR applications. 
