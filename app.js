@@ -44,7 +44,7 @@ class App {
 
     setupVR() {
         this.renderer.xr.enabled = true;
-        document.body.appendChild(VRButton.create(this.renderer));
+        document.body.appendChild(VRButton.createButton(this.renderer));
     }
 
     resize() {
