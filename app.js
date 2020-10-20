@@ -34,7 +34,7 @@ class App {
 
         const extrudeSettings = {
             steps: 1,
-            depth: 5,
+            depth: 50,
             bevelEnabled: true
         }
 
