@@ -29,7 +29,14 @@ class App {
 
         this.renderer.setAnimationLoop(this.render.bind(this));
 
-        const geometry = new THREE.SphereBufferGeometry(1, 50, 50, 50);
+        //const geometry = new THREE.SphereBufferGeometry(1, 50, 50, 50);
+        const geometry = new THREE.CircleBufferGeometry(1, 50);
+
+        const extrudeSettings = {
+            steps: 1,
+            depth: 1,
+            bevelEnabled: true
+        }
 
         const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
 
