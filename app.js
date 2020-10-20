@@ -30,11 +30,24 @@ class App {
         this.renderer.setAnimationLoop(this.render.bind(this));
 
         //const geometry = new THREE.SphereBufferGeometry(1, 50, 50, 50);
-        const shape = new THREE.CircleBufferGeometry(1, 50);
+        const shape = new THREE.Shape();
+        const outerRadius = 0.8;
+        const innerRadius = 0.4;
+        const PI2 = Math.PI * 2;
+        const inc = PI2 / 10;
+
+        shape.moveTo(outerRadius, 0);
+        let inner = true;
+
+        for (let theta = inc; theta < PI2; theta += inc) {
+            const radius = (inner) ? innerRadius : outerRadius;
+            shape.lineTo(Math.cos(theta) * radius, Math.sin(theta) * radius);
+            inner = !inner;
+        }
 
         const extrudeSettings = {
             steps: 1,
-            depth: 50,
+            depth: 1,
             bevelEnabled: true
         }
 
