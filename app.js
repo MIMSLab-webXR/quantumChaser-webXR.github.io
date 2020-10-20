@@ -35,7 +35,7 @@ class App {
 
         this.mesh = new THREE.Mesh(geometry, material);
 
-        this.mesh.position.y = 4;
+        this.mesh.position.y = 2;
         this.mesh.scale.set(1, 1, 1);
 
         this.scene.add(this.mesh);
