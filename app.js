@@ -29,13 +29,13 @@ class App {
 
         this.renderer.setAnimationLoop(this.render.bind(this));
 
-        const geometry = new THREE.CircleBufferGeometry(1, 32, 0, 2 * Math.PI);
+        const geometry = new THREE.SphereBufferGeometry(1, 32, 32, 32);
 
         const material = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
 
         this.mesh = new THREE.Mesh(geometry, material);
 
-        this.mesh.position.y = 2;
+        this.mesh.position.y = 4;
         this.mesh.scale.set(1, 1, 1);
 
         this.scene.add(this.mesh);
