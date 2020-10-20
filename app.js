@@ -3,7 +3,6 @@ import { OrbitControls } from './Library/THREE/jsm/OrbitControls.js';
 import { VRButton } from './Library/THREE/jsm/VRButton.js';
 import { ARButton } from './Library/THREE/jsm/ARButton.js';
 import { XRControllerModelFactory } from './Library/THREE/jsm/XRControllerModelFactory.js'
-import { ARButton } from './Library/THREE/jsm/ARButton.js';
 
 class App {
     constructor() {
