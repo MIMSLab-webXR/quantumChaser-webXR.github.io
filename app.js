@@ -38,6 +38,13 @@ class App {
         window.addEventListener('resize', this.resize.bind(this));
     }
 
+    initScene() {
+    }
+
+    setupVR() {
+
+    }
+
     resize() {
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
