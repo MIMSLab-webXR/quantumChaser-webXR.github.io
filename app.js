@@ -86,9 +86,9 @@ class App {
 
     loadGLTF() {
         const self = this;
-        const loader = new GLTFLoader().setPath('./Assets/bbdc600.glb');
+        const loader = new GLTFLoader().setPath('./Assets/Models/');
 
-        loader.load('',
+        loader.load('BCh600/bbdc600.glb',
             function (gltf) {
                 self.object = gltf.scene;
                 self.scene.add(gltf.scene);
