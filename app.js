@@ -53,7 +53,11 @@ class App {
 
         const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
 
-        const material = new THREE.MeshLambertMaterial({ color: 0x00ff00 });
+        const material = new THREE.MeshPhongMaterial({
+            color: 0x00ff00,
+            specular: 0x444444,
+            shininess: 60
+        });
 
         this.mesh = new THREE.Mesh(geometry, material);
 
