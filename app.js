@@ -5,6 +5,8 @@ import { FBXLoader } from './Library/THREE/jsm/FBXLoader.js';
 import { VRButton } from './Library/THREE/jsm/VRButton.js';
 import { ARButton } from './Library/THREE/jsm/ARButton.js';
 import { XRControllerModelFactory } from './Library/THREE/jsm/XRControllerModelFactory.js'
+import { BoxLineGeometry } from './Library/THREE/jsm/BoxLineGeometry.js'
+import { Stats } from './Library/stats.module.js'
 import { LoadingBar } from './Library/LoadingBar.js';
 import { vector3ToString } from './Library/DebugUtils.js'
 
@@ -34,45 +36,7 @@ class App {
 
         this.loadingBar = new LoadingBar();
         this.loadGLTF();
-
-        //this.renderer.setAnimationLoop(this.render.bind(this));
-
-        //const shape = new THREE.Shape();
-        //const outerRadius = 0.8;
-        //const innerRadius = 0.4;
-        //const PI2 = Math.PI * 2;
-        //const inc = PI2 / 10;
-
-        //shape.moveTo(outerRadius, 0);
-        //let inner = true;
-
-        //for (let theta = inc; theta < PI2; theta += inc) {
-        //    const radius = (inner) ? innerRadius : outerRadius;
-        //    shape.lineTo(Math.cos(theta) * radius, Math.sin(theta) * radius);
-        //    inner = !inner;
-        //}
-
-        //const extrudeSettings = {
-        //    steps: 1,
-        //    depth: 1,
-        //    bevelEnabled: false
-        //}
-
-        //const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-
-        //const material = new THREE.MeshPhongMaterial({
-        //    color: 0x00ff00,
-        //    specular: 0x444444,
-        //    shininess: 60
-        //});
-
-        //this.mesh = new THREE.Mesh(geometry, material);
-
-        //this.mesh.position.y = 2;
-        //this.mesh.position.z = 2;
-        //this.mesh.scale.set(0.5, 0.5, 0.5);
-
-        //this.scene.add(this.mesh);
+        //this.loadFBX();
 
         this.controls = new OrbitControls(
             this.camera,
@@ -80,8 +44,15 @@ class App {
         this.controls.target.set(0, 3.5, 0);
         this.controls.update();
 
+        this.stats = new Stats();
+        document.body.appendChild(this.stats.dom);
+
+        this.raycaster = new THREE.Raycaster();
+        this.workingMatrix = new THREE.Matrix4();
+        this.workingVector = new THREE.Vector3();
+
         this.initScene();
-        this.setupXR();
+        this.setupVR();
 
         window.addEventListener('resize', this.resize.bind(this));
     }
@@ -93,6 +64,8 @@ class App {
         loader.load('BCh600/bbdc600.glb',
             function (gltf) {
                 self.object = gltf.scene;
+                const bbox = new THREE.Box3().setFromObject(gltf.scene);
+                console.log('min:${vector3ToString(bbox.min, 2)} - max:${vector3ToString(bbox.max, 2)}');
                 self.scene.add(gltf.scene);
                 self.loadingBar.visible = false;
                 self.renderer.setAnimationLoop(self.render.bind(self));
@@ -108,16 +81,36 @@ class App {
 
     loadFBX() {
         const self = this;
+        const loader = new GLTFLoader().setPath('./Assets/Models/');
+
+        loader.load('LearJet25/jet.fbx',
+            function (gltf) {
+                self.object = gltf.scene;
+                const bbox = new THREE.Box3().setFromObject(gltf.scene);
+                console.log('min:${vector3ToString(bbox.min, 2)} - max:${vector3ToString(bbox.max, 2)}');
+                self.scene.add(gltf.scene);
+                self.loadingBar.visible = false;
+                self.renderer.setAnimationLoop(self.render.bind(self));
+            },
+            function (xhr) {
+                self.loadingBar.progress = xhr.loaded / xhr.total;
+            },
+            function (err) {
+                console.log('Error notification');
+            }
+        )
     }
 
     initScene() {
 
     }
 
-    setupXR() {
+    setupVR() {
         this.renderer.xr.enabled = true;
         //document.body.appendChild(ARButton.createButton(this.renderer));
         document.body.appendChild(VRButton.createButton(this.renderer));
+
+        this.controllers = this.buildControllers();
     }
 
     setupAR() {
@@ -131,8 +124,47 @@ class App {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
+    buildControllers() {
+        const controllerModeFactory = new XRControllerModelFactory();
+
+        const geometry - new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(0, 0, 0),
+            new THREE.Vector3(0, 0, -1)
+        ]);
+        const line = new THREE.Line(geometry);
+        line.name = 'line';
+        line.scale.z = 0;
+
+        const controllers = [];
+
+        for (let i = 0; i <= 1; i++) {
+            const controller = this.renderer.xr.getController(i);
+            controller.add(line.clone());
+            controller.userData.selectPressed = false;
+            this.scene.add(controller);
+
+            controllers.push(controller);
+
+            const grip = this.renderer.xr.getControllerGrip(i);
+            grip.add(XRControllerModelFactory.createControllerModel(grip));
+        }
+
+        return controllers;
+    }
+
+    handleController(controller) {
+
+    }
+
     render() {
-        //this.object.rotateY(0.01);
+        this.stats.update();
+
+        if (this.controllers) {
+            const self = this;
+            this.controllers.forEach((controller) => {
+                self.handleController(controller)
+            });
+        }
         this.renderer.render(this.scene, this.camera);
     }
 }
