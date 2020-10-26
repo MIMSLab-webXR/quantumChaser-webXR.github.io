@@ -35,8 +35,8 @@ class App {
         container.appendChild(this.renderer.domElement);
 
         this.loadingBar = new LoadingBar();
-        this.loadGLTF();
-        //this.loadFBX();
+        //this.loadGLTF();
+        this.loadFBX();
 
         this.controls = new OrbitControls(
             this.camera,
