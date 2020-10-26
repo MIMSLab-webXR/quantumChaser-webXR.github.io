@@ -5,8 +5,8 @@ import { FBXLoader } from './Library/THREE/jsm/FBXLoader.js';
 import { VRButton } from './Library/THREE/jsm/VRButton.js';
 import { ARButton } from './Library/THREE/jsm/ARButton.js';
 import { XRControllerModelFactory } from './Library/THREE/jsm/XRControllerModelFactory.js'
-import { LoadingBar } from './Library/LoadingBar';
-import { vector3ToString } from './Library/DebugUtils'
+import { LoadingBar } from './Library/LoadingBar.js';
+import { vector3ToString } from './Library/DebugUtils.js'
 
 class App {
     constructor() {
