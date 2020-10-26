@@ -114,6 +114,57 @@ class App {
         });
     }
 
+    buildControllers() {
+        const controllerModelFactory = new XRControllerModelFactory();
+
+        const geometry = new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(0, 0, 0),
+            new THREE.Vector3(0, 0, -1)
+        ]);
+        const line = new THREE.Line(geometry);
+        line.name = 'line';
+        line.scale.z = 0;
+
+        const controllers = [];
+
+        for (let i = 0; i <= 1; i++) {
+            const controller = this.renderer.xr.getController(i);
+            controller.add(line.clone());
+            controller.userData.selectPressed = false;
+            this.scene.add(controller);
+
+            controllers.push(controller);
+
+            const grip = this.renderer.xr.getControllerGrip(i);
+            grip.add(controllerModelFactory.createControllerModel(grip));
+            this.scene.add(grip);
+        }
+
+        return controllers;
+    }
+
+    handleController(controller) {
+        if (controller.userData.selectPressed) {
+            controller.children[0].scale.z = 10;
+
+            this.workingMatrix.identity().extractRotation(controller.matrixWorld);
+
+            this.raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
+
+            this.raycaster.ray.direction.set(0, 0, -1).applyMatrix4(this.workingMatrix);
+
+            const intersects = this.raycaster.intersectObjects(this.room.children);
+
+            if (intersects.length > 0) {
+                intersects[0].object.add(this.highlight);
+                this.highlight.visible = true;
+                controller.children[0].scale.z = intersects[0].distance;
+            } else {
+                this.highlight.visible = false;
+            }
+        }
+    }
+
     setupAR() {
         this.renderer.xr.enabled = true;
         document.body.appendChild(ARButton.createButton(this.renderer));
@@ -167,56 +218,6 @@ class App {
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
         this.renderer.setSize(window.innerWidth, window.innerHeight);
-    }
-
-    buildControllers() {
-        const controllerModelFactory = new XRControllerModelFactory();
-
-        const geometry = new THREE.BufferGeometry().setFromPoints([
-            new THREE.Vector3(0, 0, 0),
-            new THREE.Vector3(0, 0, -1)
-        ]);
-        const line = new THREE.Line(geometry);
-        line.name = 'line';
-        line.scale.z = 0;
-
-        const controllers = [];
-
-        for (let i = 0; i <= 1; i++) {
-            const controller = this.renderer.xr.getController(i);
-            controller.add(line.clone());
-            controller.userData.selectPressed = false;
-            this.scene.add(controller);
-
-            controllers.push(controller);
-
-            const grip = this.renderer.xr.getControllerGrip(i);
-            grip.add(controllerModelFactory.createControllerModel(grip));
-        }
-
-        return controllers;
-    }
-
-    handleController(controller) {
-        if (controller.userData.selectPressed) {
-            controller.children[0].scale.z = 10;
-
-            this.workingMatrix.identity().extractRotation(controller.matrixWorld);
-
-            this.raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
-
-            this.raycaster.ray.direction.set(0, 0, -1).applyMatrix4(this.workingMatrix);
-
-            const intersects = this.raycaster.intersectObjects(this.room.children);
-
-            if (intersects.length > 0) {
-                intersects[0].object.add(this.highlight);
-                this.highlight.visible = true;
-                controller.children[0].scale.z = intersects[0].distance;
-            } else {
-                this.highlight.visible = false;
-            }
-        }
     }
 
     render() {
