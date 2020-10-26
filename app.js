@@ -102,7 +102,7 @@ class App {
     }
 
     initScene() {
-        this.highlight = new THREE > Mesh(geometry,
+        this.highlight = new THREE.Mesh(geometry,
             new THREE.MeshBasicMaterial({ color: 0xFFFFFF }));
         this.highlight.scale.set(1.2, 1.2, 1.2);
         this.scene.add(this.highlight);
@@ -176,6 +176,7 @@ class App {
             controller.children[0].scale.z = 10;
 
             this.workingMatrix.identity().extractRotation(controller.matrixWorld);
+
             this.raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
 
             this.raycaster.ray.direction.set(0, 0, -1).applyMatrix4(this.workingMatrix);
