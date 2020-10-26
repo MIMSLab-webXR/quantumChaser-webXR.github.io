@@ -23,6 +23,8 @@ class App {
         const container = document.createElement('div');
         document.body.appendChild(container);
 
+        this.clock = new THREE.Clock();
+
         this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
         this.camera.position.set(0, 1.6, 5);
 
@@ -70,32 +72,32 @@ class App {
     }
 
     initScene() {
-        //this.radius = 0.08;
+        this.radius = 0.08;
 
-        //this.room = new THREE.LineSegments(
-        //    new BoxLineGeometry(6, 6, 6, 10, 10, 10),
-        //    new THREE.LineBasicMaterial({ color: 0x808080 })
-        //);
+        this.room = new THREE.LineSegments(
+            new BoxLineGeometry(6, 6, 6, 10, 10, 10),
+            new THREE.LineBasicMaterial({ color: 0x808080 })
+        );
 
-        //this.room.geometry.translate(0, 3, 0);
-        //this.scene.add(this.room);
+        this.room.geometry.translate(0, 3, 0);
+        this.scene.add(this.room);
 
-        //const geometry = new THREE.IcosahedronBufferGeometry(this.radius, 2);
+        const geometry = new THREE.IcosahedronBufferGeometry(this.radius, 2);
 
-        //for (let i = 0; i < 200; i++) {
-        //    const object = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: Math.random() * 0xFFFFFF }));
+        for (let i = 0; i < 200; i++) {
+            const object = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: Math.random() * 0xFFFFFF }));
 
-        //    object.position.x = this.random(-2, 2);
-        //    object.position.y = this.random(-2, 2);
-        //    object.position.z = this.random(-2, 2);
+            object.position.x = this.random(-2, 2);
+            object.position.y = this.random(-2, 2);
+            object.position.z = this.random(-2, 2);
 
-        //    this.room.add(object);
-        //}
+            this.room.add(object);
+        }
 
-        //this.highlight = new THREE.Mesh(geometry,
-        //    new THREE.MeshBasicMaterial({ color: 0xFFFFFF }));
-        //this.highlight.scale.set(1.2, 1.2, 1.2);
-        //this.scene.add(this.highlight);
+        this.highlight = new THREE.Mesh(geometry,
+            new THREE.MeshBasicMaterial({ color: 0xFFFFFF }));
+        this.highlight.scale.set(1.2, 1.2, 1.2);
+        this.scene.add(this.highlight);
 
         this.dolly = new THREE.Object3D();
         this.dolly.position.z = 5;
