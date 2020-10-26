@@ -100,7 +100,9 @@ class App {
         this.dolly = new THREE.Object3D();
         this.dolly.position.z = 5;
         this.dolly.add(this.camera);
-        this.sceme.add(this.dummyCam);
+
+        this.dummyCam = new THREE.Object3D;
+        this.scene.add(this.dummyCam);
     }
 
     setupVR() {
@@ -156,25 +158,49 @@ class App {
         return controllers;
     }
 
-    handleController(controller) {
+    handleController(controller, dt) {
         if (controller.userData.selectPressed) {
-            controller.children[0].scale.z = 10;
+            //controller.children[0].scale.z = 10;
 
-            this.workingMatrix.identity().extractRotation(controller.matrixWorld);
+            //this.workingMatrix.identity().extractRotation(controller.matrixWorld);
 
-            this.raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
+            //this.raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
 
-            this.raycaster.ray.direction.set(0, 0, -1).applyMatrix4(this.workingMatrix);
+            //this.raycaster.ray.direction.set(0, 0, -1).applyMatrix4(this.workingMatrix);
 
-            const intersects = this.raycaster.intersectObjects(this.room.children);
+            //const intersects = this.raycaster.intersectObjects(this.room.children);
 
-            if (intersects.length > 0) {
-                intersects[0].object.add(this.highlight);
-                this.highlight.visible = true;
-                controller.children[0].scale.z = intersects[0].distance;
-            } else {
-                this.highlight.visible = false;
+            //if (intersects.length > 0) {
+            //    intersects[0].object.add(this.highlight);
+            //    this.highlight.visible = true;
+            //    controller.children[0].scale.z = intersects[0].distance;
+            //} else {
+            //    this.highlight.visible = false;
+            //}
+
+            const wallLimit = 1.3;
+            let pos = this.dolly.position.clone();
+            pos.y += 1;
+            const speed = 2;
+            const quaternion = this.dolly.quaternion.clone();
+            this.dolly.quaternion.copy(this.dummyCam.getWorldQuaternion());
+            this.dolly.getWorldDirection(this.workingVector);
+            this.workingVector.negate();
+
+            this.raycaster.set(pos, this.workingVector);
+            let blocked = false;
+            let intersect = this.raycast.intersectObjects(this.colliders);
+
+            if (intersect.length > 0) {
+                if (intersect[0].distance < wallLimit) blocked = true;
             }
+
+            if (!blocked) {
+                this.dolly.translateZ(-dt * speed);
+            }
+
+            this.dolly.position.y = 0;
+            this.dolly.quaternion.copy(quaternion);
         }
     }
 
@@ -234,6 +260,7 @@ class App {
     }
 
     render() {
+        const dt = this.clock.getDelta();
         this.stats.update();
 
         if (this.controllers) {
