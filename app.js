@@ -83,7 +83,7 @@ class App {
         const self = this;
         const loader = new GLTFLoader().setPath('./Assets/Models/');
 
-        loader.load('LearJet25/jet.fbx',
+        loader.load('BCh600/bbdc600.fbx',
             function (gltf) {
                 self.object = gltf.scene;
                 const bbox = new THREE.Box3().setFromObject(gltf.scene);
