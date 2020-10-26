@@ -68,7 +68,7 @@ class App {
         this.room.geometry.translate(0, 3, 0);
         this.scene.add(this.room);
 
-        const geometry - new THREE.IcosahedronBufferGeometry(this.radius, 2);
+        const geometry = new THREE.IcosahedronBufferGeometry(this.radius, 2);
 
         for (let i = 0; i < 200; i++) {
             const object = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: Math.random() * 0xFFFFFF }));
