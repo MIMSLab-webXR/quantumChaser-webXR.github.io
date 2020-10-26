@@ -26,7 +26,7 @@ class App {
         light.position.set(0.2, 1, 1);
         this.scene.add(light);
 
-        this.renderer = new THREE.WebGLRenderer({ antialias: true });
+        this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
         this.renderer.outputEncoding = THREE.sRGBEncoding;
@@ -132,7 +132,7 @@ class App {
     }
 
     render() {
-        this.mesh.rotateY(0.01);
+        //this.object.rotateY(0.01);
         this.renderer.render(this.scene, this.camera);
     }
 }
