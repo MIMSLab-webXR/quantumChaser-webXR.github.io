@@ -57,6 +57,10 @@ class App {
         window.addEventListener('resize', this.resize.bind(this));
     }
 
+    random(min, max) {
+        return Math.random() * (max - min) + min;
+    }
+
     initScene() {
         this.radius = 0.08;
 
