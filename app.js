@@ -19,13 +19,13 @@ class App {
         this.camera.position.set(0, 0, 4);
 
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0xbbbbbb);
+        this.scene.background = new THREE.Color(0x505050);
 
-        const ambient = new THREE.HemisphereLight(0xffffff, 0xbbbbff, 0.3);
+        const ambient = new THREE.HemisphereLight(0x606060, 0x404040, 0.3);
         this.scene.add(ambient);
 
-        const light = new THREE.DirectionalLight();
-        light.position.set(0.2, 1, 1);
+        const light = new THREE.DirectionalLight(0xFFFFFF);
+        light.position.set(1, 1, 1).normalize;
         this.scene.add(light);
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -55,6 +55,64 @@ class App {
         this.setupVR();
 
         window.addEventListener('resize', this.resize.bind(this));
+    }
+
+    initScene() {
+        this.radius = 0.08;
+
+        this.room = new THREE.LineSegments(
+            new BoxLineGeometry(6, 6, 6, 10, 10, 10),
+            new THREE.LineBasicMaterial({ color: 0x808080 })
+        );
+
+        this.room.geometry.translate(0, 3, 0);
+        this.scene.add(this.room);
+
+        const geometry - new THREE.IcosahedronBufferGeometry(this.radius, 2);
+
+        for (let i = 0; i < 200; i++) {
+            const object = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: Math.random() * 0xFFFFFF }));
+
+            object.position.x = this.random(-2, 2);
+            object.position.y = this.random(-2, 2);
+            object.position.z = this.random(-2, 2);
+
+            this.room.add(object);
+        }
+
+        this.highlight = new THREE.Mesh(geometry,
+            new THREE.MeshBasicMaterial({ color: 0xFFFFFF }));
+        this.highlight.scale.set(1.2, 1.2, 1.2);
+        this.scene.add(this.highlight);
+    }
+
+    setupVR() {
+        this.renderer.xr.enabled = true;
+        //document.body.appendChild(ARButton.createButton(this.renderer));
+        document.body.appendChild(VRButton.createButton(this.renderer));
+
+        this.controllers = this.buildControllers();
+
+        function onSelectStart() {
+            this.children[0].scale.z = 10;
+            this.userData.selectPressed = true;
+        }
+
+        function onSelectEnd() {
+            this.children[0].scale.z = 0;
+            self.highlight.visible = false;
+            this.userData.selectPressed = false;
+        }
+
+        this.controllers.forEach((controller) => {
+            controller.addEventListener('selectstart', onSelectStart);
+            controller.addEventListener('selectend', onSelectEnd);
+        });
+    }
+
+    setupAR() {
+        this.renderer.xr.enabled = true;
+        document.body.appendChild(ARButton.createButton(this.renderer));
     }
 
     loadGLTF() {
@@ -99,42 +157,6 @@ class App {
                 console.log('Error notification');
             }
         )
-    }
-
-    initScene() {
-        this.highlight = new THREE.Mesh(geometry,
-            new THREE.MeshBasicMaterial({ color: 0xFFFFFF }));
-        this.highlight.scale.set(1.2, 1.2, 1.2);
-        this.scene.add(this.highlight);
-    }
-
-    setupVR() {
-        this.renderer.xr.enabled = true;
-        //document.body.appendChild(ARButton.createButton(this.renderer));
-        document.body.appendChild(VRButton.createButton(this.renderer));
-
-        this.controllers = this.buildControllers();
-
-        function onSelectStart() {
-            this.children[0].scale.z = 10;
-            this.userData.selectPressed = true;
-        }
-
-        function onSelectEnd() {
-            this.children[0].scale.z = 0;
-            self.highlight.visible = false;
-            this.userData.selectPressed = false;
-        }
-
-        this.controllers.forEach((controller) => {
-            controller.addEventListener('selectstart', onSelectStart);
-            controller.addEventListener('selectend', onSelectEnd);
-        });
-    }
-
-    setupAR() {
-        this.renderer.xr.enabled = true;
-        document.body.appendChild(ARButton.createButton(this.renderer));
     }
 
     resize() {
