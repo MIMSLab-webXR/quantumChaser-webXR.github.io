@@ -219,7 +219,7 @@ class App {
         //});
     }
 
-    buildControllers() {
+    buildControllers(data) {
         let geometry, material;
 
         switch (data.targetRayMode) {
