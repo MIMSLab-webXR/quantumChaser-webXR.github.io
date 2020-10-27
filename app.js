@@ -162,7 +162,7 @@ class App {
 
     setupVR() {
         this.renderer.xr.enabled = true;
-        const button = new VRButton(this.renderer);
+        //const button = new VRButton(this.renderer);
         const self = this;
 
         function onSelectStart() {
@@ -198,7 +198,7 @@ class App {
         this.scene.add(this.controllerGrip);
 
         //document.body.appendChild(ARButton.createButton(this.renderer));
-        //document.body.appendChild(VRButton.createButton(this.renderer));
+        document.body.appendChild(VRButton.createButton(this.renderer));
 
         //this.controllers = this.buildControllers();
 
