@@ -2,7 +2,7 @@ import * as THREE from './Library/THREE/three.module.js';
 import { OrbitControls } from './Library/THREE/jsm/OrbitControls.js';
 import { GLTFLoader } from './Library/THREE/jsm/GLTFLoader.js';
 import { FBXLoader } from './Library/THREE/jsm/FBXLoader.js';
-import { VRButton } from './Library/THREE/jsm/VRButton.js';
+import { VRButton } from './Library/VRButton.js';
 import { ARButton } from './Library/THREE/jsm/ARButton.js';
 import { XRControllerModelFactory } from './Library/THREE/jsm/XRControllerModelFactory.js'
 import { BoxLineGeometry } from './Library/THREE/jsm/BoxLineGeometry.js'
@@ -162,7 +162,7 @@ class App {
 
     setupVR() {
         this.renderer.xr.enabled = true;
-        //const button = new VRButton(this.renderer);
+        const button = new VRButton(this.renderer);
         const self = this;
 
         function onSelectStart() {
@@ -198,7 +198,7 @@ class App {
         this.scene.add(this.controllerGrip);
 
         //document.body.appendChild(ARButton.createButton(this.renderer));
-        document.body.appendChild(VRButton.createButton(this.renderer));
+        //document.body.appendChild(VRButton.createButton(this.renderer));
 
         //this.controllers = this.buildControllers();
 
