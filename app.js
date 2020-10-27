@@ -94,7 +94,7 @@ class App {
         grid.material.transparent = true;
         this.scene.add(grid);
 
-        const geometry = new THREE > BoxGeometry(5, 5, 5);
+        const geometry = new THREE.BoxGeometry(5, 5, 5);
         const material = new THREE.MeshPhongMaterial({ color: 0xAAAA22 });
         const edges = new THREE.EdgesGeometry(geometry);
         const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({
