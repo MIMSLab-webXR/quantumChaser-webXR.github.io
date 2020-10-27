@@ -262,7 +262,7 @@ class App {
     }
 
     render() {
-        const dt = this.clock.getDelta();
+        //const dt = this.clock.getDelta();
         this.stats.update();
 
         if (this.controllers) {
