@@ -86,7 +86,7 @@ class App {
                 color: 0x999999,
                 depthWrite: false
             }));
-        ground.rotation.x = -MathPI / 2;
+        ground.rotation.x = -Math.PI / 2;
         this.scene.add(ground);
 
         var grid = new THREE.GridHelper(200, 40, 0x000000, 0x000000);
