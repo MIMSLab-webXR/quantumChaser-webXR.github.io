@@ -117,6 +117,14 @@ class App {
             }
         }
 
+        this.dolly = new THREE.Object3D();
+        this.dolly.position.z = 5;
+        this.dolly.add(this.camera);
+        this.scene.add(this.dolly);
+
+        this.dummyCam = new THREE.Object3D();
+        this.camera.add(this.dummyCam);
+
         //this.radius = 0.08;
 
         //this.room = new THREE.LineSegments(
@@ -265,6 +273,32 @@ class App {
     handleController(controller, dt) {
         if (controller.userData.selectPressed) {
 
+            const wallLimit = 1.3;
+            let pos = this.dolly.position.clone();
+            pos.y += 1;
+
+            const speed = 2;
+            const quaternion = this.dolly.quaternion.clone();
+            this.dolly.quaternion.copy(this.dummyCam.getWorldQuaternion());
+            this.dolly.getWorldDirection(this.workingVector);
+            this.workingVector.negate();
+
+            this.raycaster.set(pos, this.workingVector);
+
+            let blocked = false;
+
+            let intersect = this.raycaster.intersectObjects(this.colliders);
+
+            if (intersect.length > 0) {
+                if (intersect[0].distance < wallLimit) blocked = true;
+            }
+
+            if (!blocked) {
+                this.dolly.translateZ(-dt * speed);
+            }
+            
+            this.dolly.position.y = 0;
+            this.dolly.quaternion.copy(quaternion);
             //controller.children[0].scale.z = 10;
 
             //this.workingMatrix.identity().extractRotation(controller.matrixWorld);
