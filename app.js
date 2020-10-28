@@ -417,7 +417,7 @@ class App {
         //    self.handleController(controller)
         //});
         //}
-        if (this.controller) this.handleController(this.controller.dt);
+        if (this.controller) this.handleController(this.controller, dt);
         this.renderer.render(this.scene, this.camera);
     }
 }
