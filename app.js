@@ -46,7 +46,9 @@ class App {
 
         container.appendChild(this.renderer.domElement);
 
-        this.loadingBar = new LoadingBar();
+        //this.loadingBar = new LoadingBar();
+        //this.loadGLTF();
+        ////this.loadFBX();
 
         this.controls = new OrbitControls(
             this.camera,
@@ -115,9 +117,6 @@ class App {
                 this.colliders.push(box);
             }
         }
-
-        //this.loadGLTF();
-        //this.loadFBX();
 
         this.dolly = new THREE.Object3D();
         this.dolly.position.z = 5;
