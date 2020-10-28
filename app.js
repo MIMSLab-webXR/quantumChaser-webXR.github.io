@@ -164,6 +164,8 @@ class App {
     setupVR() {
         this.renderer.xr.enabled = true;
         const button = new VRButton(this.renderer);
+
+        this.controllers = this.buildControllers();
         const self = this;
 
         function onSelectStart() {
