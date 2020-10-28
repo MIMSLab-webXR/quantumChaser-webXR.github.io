@@ -164,8 +164,6 @@ class App {
     setupVR() {
         this.renderer.xr.enabled = true;
         const button = new VRButton(this.renderer);
-
-        this.controllers = this.buildControllers();
         const self = this;
 
         function onSelectStart() {
@@ -181,7 +179,7 @@ class App {
         this.controller.addEventListener('selectstart', onSelectStart);
         this.controller.addEventListener('selectend', onSelectEnd);
         this.controller.addEventListener('connected', function (event) {
-            const mesh = self.buildControllers.call(self, event.data);
+            const mesh = self.buildController.call(self, event.data);
             mesh.scale.z = 0;
             this.add(mesh);
         });
@@ -276,29 +274,29 @@ class App {
     handleController(controller, dt) {
         if (controller.userData.selectPressed) {
 
-            //const wallLimit = 1.3;
-            //let pos = this.dolly.position.clone();
-            //pos.y += 1;
+            const wallLimit = 1.3;
+            let pos = this.dolly.position.clone();
+            pos.y += 1;
 
             const speed = 2;
             const quaternion = this.dolly.quaternion.clone();
             this.dolly.quaternion.copy(this.dummyCam.getWorldQuaternion());
-            //this.dolly.getWorldDirection(this.workingVector);
-            //this.workingVector.negate();
+            this.dolly.getWorldDirection(this.workingVector);
+            this.workingVector.negate();
 
-            //this.raycaster.set(pos, this.workingVector);
+            this.raycaster.set(pos, this.workingVector);
 
-            //let blocked = false;
+            let blocked = false;
 
-            //let intersect = this.raycaster.intersectObjects(this.colliders);
+            let intersect = this.raycaster.intersectObjects(this.colliders);
 
-            //if (intersect.length > 0) {
-            //    if (intersect[0].distance < wallLimit) blocked = true;
-            //}
+            if (intersect.length > 0) {
+                if (intersect[0].distance < wallLimit) blocked = true;
+            }
 
-            //if (!blocked) {
+            if (!blocked) {
                 this.dolly.translateZ(-dt * speed);
-            //}
+            }
             
             this.dolly.position.y = 0;
             this.dolly.quaternion.copy(quaternion);
