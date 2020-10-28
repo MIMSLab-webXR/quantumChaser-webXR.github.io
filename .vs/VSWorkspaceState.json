@@ -1,6 +1,12 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\Assets",
+    "\\Assets\\Models",
+    "\\Assets\\Models\\BCh600",
+    "\\Assets\\Models\\LearJet25",
+    "\\Library\\THREE",
+    "\\Library\\THREE\\jsm"
   ],
   "SelectedNode": "\\app.js",
   "PreviewInSolutionExplorer": false
