@@ -116,7 +116,7 @@ class App {
             }
         }
 
-        this.loadGLTF();
+        //this.loadGLTF();
         //this.loadFBX();
 
         this.dolly = new THREE.Object3D();
