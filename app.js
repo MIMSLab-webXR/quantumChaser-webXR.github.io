@@ -208,7 +208,7 @@ class App {
         //document.body.appendChild(ARButton.createButton(this.renderer));
         //document.body.appendChild(VRButton.createButton(this.renderer));
 
-        //this.controllers = this.buildControllers();
+        this.controllers = this.buildControllers();
 
         //function onSelectStart() {
         //    this.children[0].scale.z = 10;
@@ -225,6 +225,35 @@ class App {
         //    controller.addEventListener('selectstart', onSelectStart);
         //    controller.addEventListener('selectend', onSelectEnd);
         //});
+    }
+
+    buildControllers() {
+        const controllerModelFactory = new XRControllerModelFactory();
+
+        const geometry = new THREE.BufferGeometry().setFromPoints([
+            new THREE.Vector3(0, 0, 0),
+            new THREE.Vector3(0, 0, -1)
+        ]);
+        const line = new THREE.Line(geometry);
+        line.name = 'line';
+        line.scale.z = 0;
+
+        const controllers = [];
+
+        for (let i = 0; i <= 1; i++) {
+            const controller = this.renderer.xr.getController(i);
+            controller.add(line.clone());
+            controller.userData.selectPressed = false;
+            this.scene.add(controller);
+
+            controllers.push(controller);
+
+            const grip = this.renderer.xr.getControllerGrip(i);
+            grip.add(controllerModelFactory.createControllerModel(grip));
+            this.scene.add(grip);
+        }
+
+        return controllers
     }
 
     buildController(data) {
@@ -248,34 +277,6 @@ class App {
                 material = new THREE.MeshBasicMaterial({ opacity: 0.5, transparent: true });
                 return new THREE.Mesh(geometry, material);
         }
-
-
-        //const controllerModelFactory = new XRControllerModelFactory();
-
-        //const geometry = new THREE.BufferGeometry().setFromPoints([
-        //    new THREE.Vector3(0, 0, 0),
-        //    new THREE.Vector3(0, 0, -1)
-        //]);
-        //const line = new THREE.Line(geometry);
-        //line.name = 'line';
-        //line.scale.z = 0;
-
-        //const controllers = [];
-
-        //for (let i = 0; i <= 1; i++) {
-        //    const controller = this.renderer.xr.getController(i);
-        //    controller.add(line.clone());
-        //    controller.userData.selectPressed = false;
-        //    this.scene.add(controller);
-
-        //    controllers.push(controller);
-
-        //    const grip = this.renderer.xr.getControllerGrip(i);
-        //    grip.add(controllerModelFactory.createControllerModel(grip));
-        //    this.scene.add(grip);
-        //}
-
-        //return controllers;
     }
 
     handleController(controller, dt) {
@@ -370,6 +371,12 @@ class App {
         const dt = this.clock.getDelta();
         this.stats.update();
         if (this.controller) this.handleController(this.controller, dt);
+        if (this.controllers) {
+            const self = this;
+            this.controllers.forEach((controller) => {
+                self.handleController(controller)
+            });
+        }
         this.renderer.render(this.scene, this.camera);
     }
 }
