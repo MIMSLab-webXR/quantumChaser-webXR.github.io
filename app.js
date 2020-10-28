@@ -249,7 +249,7 @@ class App {
                 return new THREE.Mesh(geometry, material);
         }
 
-    }
+
         //const controllerModelFactory = new XRControllerModelFactory();
 
         //const geometry = new THREE.BufferGeometry().setFromPoints([
@@ -281,6 +281,7 @@ class App {
     handleController(controller, dt) {
         if (controller.userData.selectPressed) {
 
+
             const wallLimit = 1.3;
             let pos = this.dolly.position.clone();
             pos.y += 1;
@@ -304,7 +305,7 @@ class App {
             if (!blocked) {
                 this.dolly.translateZ(-dt * speed);
             }
-            
+
             this.dolly.position.y = 0;
             this.dolly.quaternion.copy(quaternion);
             //controller.children[0].scale.z = 10;
@@ -406,18 +407,18 @@ class App {
         this.renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
-render() {
-    const dt = this.clock.getDelta();
-    this.stats.update();
+    render() {
+        const dt = this.clock.getDelta();
+        this.stats.update();
 
-    //if (this.controllers) {
-    //const self = this;
-    //this.controllers.forEach((controller) => {
-    //    self.handleController(controller)
-    //});
-    //}
-    if (this.controller) this.handleController(this.controller.dt);
-    this.renderer.render(this.scene, this.camera);
+        //if (this.controllers) {
+        //const self = this;
+        //this.controllers.forEach((controller) => {
+        //    self.handleController(controller)
+        //});
+        //}
+        if (this.controller) this.handleController(this.controller.dt);
+        this.renderer.render(this.scene, this.camera);
     }
 }
 
