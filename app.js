@@ -46,8 +46,8 @@ class App {
 
         container.appendChild(this.renderer.domElement);
 
-        //this.loadingBar = new LoadingBar();
-        //this.loadGLTF();
+        this.loadingBar = new LoadingBar();
+        this.loadGLTF();
         ////this.loadFBX();
 
         this.controls = new OrbitControls(
@@ -208,7 +208,7 @@ class App {
         //document.body.appendChild(ARButton.createButton(this.renderer));
         //document.body.appendChild(VRButton.createButton(this.renderer));
 
-        this.controllers = this.buildControllers();
+        //this.controllers = this.buildControllers();
 
         //function onSelectStart() {
         //    this.children[0].scale.z = 10;
@@ -371,12 +371,12 @@ class App {
         const dt = this.clock.getDelta();
         this.stats.update();
         if (this.controller) this.handleController(this.controller, dt);
-        if (this.controllers) {
-            const self = this;
-            this.controllers.forEach((controller) => {
-                self.handleController(controller)
-            });
-        }
+        //if (this.controllers) {
+        //    const self = this;
+        //    this.controllers.forEach((controller) => {
+        //        self.handleController(controller)
+        //    });
+        //}
         this.renderer.render(this.scene, this.camera);
     }
 }
