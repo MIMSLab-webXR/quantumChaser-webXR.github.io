@@ -4,12 +4,12 @@ import { GLTFLoader } from './Library/THREE/jsm/GLTFLoader.js';
 import { FBXLoader } from './Library/THREE/jsm/FBXLoader.js';
 import { VRButton } from './Library/VRButton.js';
 import { ARButton } from './Library/THREE/jsm/ARButton.js';
-import { XRControllerModelFactory } from './Library/THREE/jsm/XRControllerModelFactory.js'
-import { BoxLineGeometry } from './Library/THREE/jsm/BoxLineGeometry.js'
-import { Stats } from './Library/stats.module.js'
+import { XRControllerModelFactory } from './Library/THREE/jsm/XRControllerModelFactory.js';
+import { BoxLineGeometry } from './Library/THREE/jsm/BoxLineGeometry.js';
+import { Stats } from './Library/stats.module.js';
 import { LoadingBar } from './Library/LoadingBar.js';
-import { vector3ToString } from './Library/DebugUtils.js
-import { CanvasUI } from './Library/CanvasUI.js'
+import { vector3ToString } from './Library/DebugUtils.js';
+import { CanvasUI } from './Library/CanvasUI.js';
 import {
     Constants as MotionControllerConstants,
     fetchProfile,
