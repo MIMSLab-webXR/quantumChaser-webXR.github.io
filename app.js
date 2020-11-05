@@ -8,7 +8,8 @@ import { XRControllerModelFactory } from './Library/THREE/jsm/XRControllerModelF
 import { BoxLineGeometry } from './Library/THREE/jsm/BoxLineGeometry.js'
 import { Stats } from './Library/stats.module.js'
 import { LoadingBar } from './Library/LoadingBar.js';
-import { vector3ToString } from './Library/DebugUtils.js';
+import { vector3ToString } from './Library/DebugUtils.js
+import { CanvasUI } from './Library/CanvasUI.js'
 import {
     Constants as MotionControllerConstants,
     fetchProfile,
@@ -46,8 +47,8 @@ class App {
 
         container.appendChild(this.renderer.domElement);
 
-        this.loadingBar = new LoadingBar();
-        this.loadGLTF();
+        //this.loadingBar = new LoadingBar();
+        //this.loadGLTF();
         ////this.loadFBX();
 
         this.controls = new OrbitControls(
@@ -205,6 +206,8 @@ class App {
         this.controllerGrip.add(controllerModelFactory.createControllerModel(this.controllerGrip));
         this.scene.add(this.controllerGrip);
 
+        this.createUI();
+
         //document.body.appendChild(ARButton.createButton(this.renderer));
         //document.body.appendChild(VRButton.createButton(this.renderer));
 
@@ -225,6 +228,14 @@ class App {
         //    controller.addEventListener('selectstart', onSelectStart);
         //    controller.addEventListener('selectend', onSelectEnd);
         //});
+    }
+
+    createUI() {
+        this.ui = new CanvasUI();
+        this.ui.updateElement("body", "Hello World!");
+        this.ui.update();
+        this.ui.mesh.position.set(0, 1.5, -1.2);
+        this.scene.add(this.ui.mesh);
     }
 
     buildControllers() {
