@@ -11,7 +11,7 @@ import { LoadingBar } from './Library/LoadingBar.js';
 import { vector3ToString } from './Library/DebugUtils.js';
 import { CanvasUI } from './Library/CanvasUI.js';
 import { CanvasKeyboard } from './Library/CanvasKeyboard.js';
-import { XRWorldMeshes } from './Library/XRWorldMeshesjs';
+import { XRWorldMeshes } from './Library/XRWorldMeshes.js';
 import { TeleportMesh } from './Library/TeleportMesh.js';
 import { Player } from './Library/Player.js';
 import { RGBELoader } from './Library/THREE/jsm/RGBELoader.js';
