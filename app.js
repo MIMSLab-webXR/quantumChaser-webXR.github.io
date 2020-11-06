@@ -107,11 +107,15 @@ class App {
     }
 
     loadEnvironment() {
+
         const loader = new GLTFLoader().setPath(this.assetsPath);
         const self = this;
 
-        //Load a glTF resource
-        loader.load('./TrainingKits/dungeon.glb',
+        // Load a glTF resource
+        loader.load(
+            // resource URL
+            './TrainingKits/dungeon.glb',
+            // called when the resource is loaded
             function (gltf) {
                 const scale = 0.5;
 
@@ -134,13 +138,21 @@ class App {
                 gltf.scene.scale.set(scale, scale, scale);
 
                 self.initGame();
-            }, function (xhr) {
+            },
+            // called while loading is progressing
+            function (xhr) {
+
                 self.loadingBar.progress = (xhr.loaded / xhr.total);
-            }, function (error) {
+
+            },
+            // called when loading has errors
+            function (error) {
+
                 console.log('An error happened');
+
             }
         );
-    }
+    }			
 
     initGame() {
         this.player = this.createPlayer();
