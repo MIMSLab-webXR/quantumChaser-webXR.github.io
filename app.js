@@ -50,7 +50,7 @@ class App {
         this.sun.shadow.camera.right = this.sun.shadow.camera.top = lightSize;
 
         this.sun.shadow.mapSize.width = 1024;
-        this.shadow.mapSize.height = 1024;
+        this.sun.shadow.mapSize.height = 1024;
 
         this.sun.position.set(0, 10, 10);
         this.scene.add(this.sun);
