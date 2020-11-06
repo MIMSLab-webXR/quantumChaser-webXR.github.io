@@ -114,7 +114,7 @@ class App {
         // Load a glTF resource
         loader.load(
             // resource URL
-            './TrainingKits/dungeon.glb',
+            'dungeon.glb',
             // called when the resource is loaded
             function (gltf) {
                 const scale = 0.5;
