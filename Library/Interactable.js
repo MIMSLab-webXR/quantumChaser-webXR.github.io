@@ -1,4 +1,4 @@
-import {Mesh} from './three/three.module.js';
+import {Mesh} from './THREE/three.module.js';
 import {Tween} from './Toon3D.js';
 
 class Interactable{
