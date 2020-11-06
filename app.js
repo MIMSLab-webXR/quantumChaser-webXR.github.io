@@ -205,6 +205,9 @@ class App {
         line.name = 'ray';
         line.scale.z = 10;
 
+        const geometry2 = new THREE.SphereGeometry(0.03, 8, 6);
+        const material = new THREE.MeshBasicMaterial({ color: 0xFF0000 });
+
         const controllers = [];
 
         for (let i = 0; i <= 1; i++) {
