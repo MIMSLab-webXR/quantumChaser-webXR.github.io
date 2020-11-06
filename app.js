@@ -15,6 +15,7 @@ import { XRWorldMeshes } from './Library/XRWorldMeshes.js';
 import { TeleportMesh } from './Library/TeleportMesh.js';
 import { Player } from './Library/Player.js';
 import { RGBELoader } from './Library/THREE/jsm/RGBELoader.js';
+import { Interactable } from './Library/Interactable.js';
 import {
     Constants as MotionControllerConstants,
     fetchProfile,
@@ -122,15 +123,35 @@ class App {
                 self.scene.add(gltf.scene);
 
                 gltf.scene.traverse(function (child) {
+                    let interactable;
                     if (child.isMesh) {
                         if (child.name == "Navmesh") {
                             child.material.visible = false;
                             self.navmesh = child;
                             child.geometry.scale(scale, scale, scale);
                             child.scale.set(2, 2, 2);
-                        } else {
-                            child.castShadow = false;
-                            child.receiveShadow = true;
+                        } else if (child.name == "SD_Prop_Chest_Skull_Lid_01") {
+                            self.interactables.push(new Interactable(child, {
+                                mode: 'tweens',
+                                tweens: [{
+                                    target: child.quaternion,
+                                    channel: 'x',
+                                    start: 0,
+                                    end: -0.7,
+                                    duration: 1
+                                }]
+                            }));
+                        } else if (child.name == "Door_01") {
+                            self.interactables.push(new Interactable(child, {
+                                mode: 'tweens',
+                                tweens: [{
+                                    target: chold.quaternion,
+                                    channel: 'z',
+                                    start: 0,
+                                    end: 0.6,
+                                    duration: 1
+                                }]
+                            }));
                         }
                     }
                 });
@@ -237,9 +258,9 @@ class App {
 
             if (this.userData.teleport) {
                 self.player.object.position.copy(this.userData.teleport.position);
-            }
-
-            if (this.userData.marker.visible) {
+            } else if (this.userData.interactable) {
+                this.userData.interactable.play();
+            } else if (this.userData.marker.visible) {
                 const pos = this.userData.marker.position;
                 console.log(`${pos.x.toFixed(3)}, 
                     ${pos.y.toFixed(3)},
@@ -274,7 +295,10 @@ class App {
 
         this.collisionObjects = [this.navmesh];
 
-        this.teleports.forEach(teleport => self.collisionObjects.push(teleport.children[0]));
+        this.teleports.forEach(teleport =>
+            self.collisionObjects.push(teleport.children[0]));
+
+        this.interactables.forEach(Interactable => self.collisionObjects.push(interactable.mesh));
     }
 
     intersectObjects(controller) {
@@ -301,6 +325,10 @@ class App {
             } else if (intersect.object.parent && intersect.object.parent instanceof TeleportMesh) {
                 intersect.object.parent.selected = true;
                 controller.userData.teleport = intersect.object.parent;
+            } else {
+                const tmp = this.interactables.filter(interactable =>
+                    interactable.mesh == intersect.object);
+                if (tmp.length > 0) controller.userData.interactable = tmp[0];
             }
         }
     }
@@ -354,11 +382,13 @@ class App {
             this.teleports.forEach(teleport => {
                 teleport.selected = false;
                 teleport.update();
-            })
+            });
 
             this.controllers.forEach(controller => {
                 self.intersectObjects(controller);
-            })
+            });
+
+            this.interactables.forEach(interactable => interactable.update(dt));
 
             this.player.update(dt);
         }
