@@ -95,172 +95,82 @@ class App {
 
         const self = this;
 
-        loader.load('');
+        loader.load('./Assets/TrainingKits/hdr/venice_sunset_1k.hdr', (texture) => {
+            const envMap = pmremGenerator.fromEquirectangular(texture).texture;
+            pmremGenerator.dispose();
+
+            self.scene.environment = envMap;
+
+        }, undefined, (err) => {
+            console.error('An error occured setting the environment');
+        });
     }
 
-    random(min, max) {
-        return Math.random() * (max - min) + min;
-    }
+    loadEnvironment() {
+        const loader = new GLTFLoader().setPath(this.assetsPath);
+        const self = this;
 
-    initScene() {
-        this.scene.background = new THREE.Color(0xa0a0a0);
-        this.scene.fog = new THREE.Fog(0xa0a0a0, 50, 100);
+        //Load a glTF resource
+        loader.load('dungeon.glb',
+            function (gltf) {
+                const scale = 0.5;
 
-        //ground
-        const ground = new THREE.Mesh(
-            new THREE.PlaneBufferGeometry(200, 300),
-            new THREE.MeshPhongMaterial({
-                color: 0x999999,
-                depthWrite: false
-            }));
-        ground.rotation.x = -Math.PI / 2;
-        this.scene.add(ground);
+                self.scene.add(gltf.scene);
 
-        var grid = new THREE.GridHelper(200, 40, 0x000000, 0x000000);
-        grid.material.opacity = 0.2;
-        grid.material.transparent = true;
-        this.scene.add(grid);
+                gltf.scene.traverse(function (child) {
+                    if (child.isMesh) {
+                        if (child.name == "Navmesh") {
+                            child.material.visible = false;
+                            self.navmesh = child;
+                            child.geometry.scale(scale, scale, scale);
+                            child.scale.set(2, 2, 2);
+                        } else {
+                            child.castShadow = false;
+                            child.receiveShadow = true;
+                        }
+                    }
+                });
 
-        const geometry = new THREE.BoxGeometry(5, 5, 5);
-        const material = new THREE.MeshPhongMaterial({ color: 0xAAAA22 });
-        const edges = new THREE.EdgesGeometry(geometry);
-        const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({
-            color: 0x000000,
-            linewidth: 2
-        }));
+                gltf.scene.scale.set(scale, scale, scale);
 
-        this.colliders = [];
-
-        for (let x = -100; x < 100; x += 10) {
-            for (let z = -100; z < 100; z += 10) {
-                if (x == 0 && z == 0) continue;
-                const box = new THREE.Mesh(geometry, material);
-                box.position.set(x, 2.5, z);
-                const edge = line.clone();
-                edge.position.copy(box.position);
-                this.scene.add(box);
-                this.scene.add(edge);
-                this.colliders.push(box);
+                self.initGame();
+            }, function (xhr) {
+                self.loadingBar.progress = (xhr.loaded / xhr.total);
+            }, function (error) {
+                console.log('An error happened');
             }
-        }
-
-        this.dolly = new THREE.Object3D();
-        this.dolly.position.z = 5;
-        this.dolly.add(this.camera);
-        this.scene.add(this.dolly);
-
-        this.dummyCam = new THREE.Object3D();
-        this.camera.add(this.dummyCam);
-
-        //this.radius = 0.08;
-
-        //this.room = new THREE.LineSegments(
-        //    new BoxLineGeometry(6, 6, 6, 10, 10, 10),
-        //    new THREE.LineBasicMaterial({ color: 0x808080 })
-        //);
-
-        //this.room.geometry.translate(0, 3, 0);
-        //this.scene.add(this.room);
-
-        //const geometry = new THREE.IcosahedronBufferGeometry(this.radius, 2);
-
-        //for (let i = 0; i < 200; i++) {
-        //    const object = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({ color: Math.random() * 0xFFFFFF }));
-
-        //    object.position.x = this.random(-2, 2);
-        //    object.position.y = this.random(-2, 2);
-        //    object.position.z = this.random(-2, 2);
-
-        //    this.room.add(object);
-        //}
-
-        //this.highlight = new THREE.Mesh(geometry,
-        //    new THREE.MeshBasicMaterial({ color: 0xFFFFFF }));
-        //this.highlight.scale.set(1.2, 1.2, 1.2);
-        //this.scene.add(this.highlight);
-
-        //this.dolly = new THREE.Object3D();
-        //this.dolly.position.z = 5;
-        //this.dolly.add(this.camera);
-
-        //this.dummyCam = new THREE.Object3D;
-        //this.scene.add(this.dummyCam);
+        );
     }
 
-    createUI() {
-        this.ui = new CanvasUI();
-        this.ui.updateElement("body", "Hello World!");
-        this.ui.update();
-        this.ui.mesh.position.set(0, 1.5, -1.2);
-        this.scene.add(this.ui.mesh);
-    }
+    initGame() {
+        this.player = this.createPlayer();
 
-    setupVR() {
-        this.renderer.xr.enabled = true;
-
-        const button = new VRButton(this.renderer);
+        const locations = [
+            new THREE.Vector3(-0.409, 0.086, 4.038),
+            new THREE.Vector3(-0.846, 0.112, 5.777),
+            new THREE.Vector3(5.220, 0.176, 2.677),
+            new THREE.Vector3(1.490, 2.305, -1.599),
+            new THREE.Vector3(7.565, 2.694, 0.008),
+            new THREE.Vector3(-8.417, 2.676, 0.192),
+            new THREE.Vector3(-6.644, 2.600, -4.114)
+        ];
 
         const self = this;
 
-        function onSelectStart() {
+        this.setupXR();
 
-            this.userData.selectPressed = true;
-        }
+        this.loading = false;
 
-        function onSelectEnd() {
+        this.renderer.setAnimationLoop(this.render.bind(this));
 
-            this.userData.selectPressed = false;
+        this.loadingBar.visible = false;
+    }
 
-        }
-
-        this.controller = this.renderer.xr.getController(0);
-        this.dolly.add(this.controller);
-        this.controller.addEventListener('selectstart', onSelectStart);
-        this.controller.addEventListener('selectend', onSelectEnd);
-        this.controller.addEventListener('connected', function (event) {
-
-            const mesh = self.buildController.call(self, event.data);
-            mesh.scale.z = 0;
-            this.add(mesh);
-
-        });
-        this.controller.addEventListener('disconnected', function () {
-
-            this.remove(this.children[0]);
-            self.controller = null;
-            self.controllerGrip = null;
-
-        });
-        this.scene.add(this.controller);
-
-        const controllerModelFactory = new XRControllerModelFactory();
-
-        this.controllerGrip = this.renderer.xr.getControllerGrip(0);
-        this.controllerGrip.add(controllerModelFactory.createControllerModel(this.controllerGrip));
-        this.scene.add(this.controllerGrip);
-
-        this.createUI();
-
-        //document.body.appendChild(ARButton.createButton(this.renderer));
-        //document.body.appendChild(VRButton.createButton(this.renderer));
-
-        //this.controllers = this.buildControllers();
-
-        //function onSelectStart() {
-        //    this.children[0].scale.z = 10;
-        //    this.userData.selectPressed = true;
-        //}
-
-        //function onSelectEnd() {
-        //    this.children[0].scale.z = 0;
-        //    self.highlight.visible = false;
-        //    this.userData.selectPressed = false;
-        //}
-
-        //this.controllers.forEach((controller) => {
-        //    controller.addEventListener('selectstart', onSelectStart);
-        //    controller.addEventListener('selectend', onSelectEnd);
-        //});
+    createMarker(geometry, material) {
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.visible = false;
+        this.scene.add(mesh);
+        return mesh;
     }
 
     buildControllers() {
@@ -270,130 +180,122 @@ class App {
             new THREE.Vector3(0, 0, 0),
             new THREE.Vector3(0, 0, -1)
         ]);
+
         const line = new THREE.Line(geometry);
-        line.name = 'line';
-        line.scale.z = 0;
+        line.name = 'ray';
+        line.scale.z = 10;
 
         const controllers = [];
 
         for (let i = 0; i <= 1; i++) {
             const controller = this.renderer.xr.getController(i);
-            controller.add(line.clone());
+            controller.userData.index = i;
             controller.userData.selectPressed = false;
-            this.scene.add(controller);
-
+            controller.add(line.clone());
+            controller.userData.marker = this.createMarker(geometry2, material);
             controllers.push(controller);
+            this.dolly.add(controller);
 
             const grip = this.renderer.xr.getControllerGrip(i);
             grip.add(controllerModelFactory.createControllerModel(grip));
-            this.scene.add(grip);
+            this.dolly.add(grip);
         }
 
-        return controllers
+        return controllers;
     }
 
-    buildController(data) {
-        let geometry, material;
-
-        switch (data.targetRayMode) {
-
-            case 'tracked-pointer':
-
-                geometry = new THREE.BufferGeometry();
-                geometry.setAttribute('position', new THREE.Float32BufferAttribute([0, 0, 0, 0, 0, - 1], 3));
-                geometry.setAttribute('color', new THREE.Float32BufferAttribute([0.5, 0.5, 0.5, 0, 0, 0], 3));
-
-                material = new THREE.LineBasicMaterial({ vertexColors: true, blending: THREE.AdditiveBlending });
-
-                return new THREE.Line(geometry, material);
-
-            case 'gaze':
-
-                geometry = new THREE.RingBufferGeometry(0.02, 0.04, 32).translate(0, 0, - 1);
-                material = new THREE.MeshBasicMaterial({ opacity: 0.5, transparent: true });
-                return new THREE.Mesh(geometry, material);
-        }
-    }
-
-    handleController(controller, dt) {
-        if (controller.userData.selectPressed) {
-
-
-            const wallLimit = 1.3;
-            let pos = this.dolly.position.clone();
-            pos.y += 1;
-
-            const speed = 2;
-            const quaternion = this.dolly.quaternion.clone();
-            this.dolly.quaternion.copy(this.dummyCam.getWorldQuaternion());
-            this.dolly.getWorldDirection(this.workingVector);
-            this.workingVector.negate();
-
-            this.raycaster.set(pos, this.workingVector);
-
-            let blocked = false;
-
-            let intersect = this.raycaster.intersectObjects(this.colliders);
-
-            if (intersect.length > 0) {
-                if (intersect[0].distance < wallLimit) blocked = true;
-            }
-
-            if (!blocked) {
-                this.dolly.translateZ(-dt * speed);
-            }
-
-            this.dolly.position.y = 0;
-            this.dolly.quaternion.copy(quaternion);            
-        }
-    }
-
-    setupAR() {
+    setupXR() {
         this.renderer.xr.enabled = true;
-        document.body.appendChild(ARButton.createButton(this.renderer));
+
+        const self = this;
+
+        function onSelectStart() {
+            this.userData.selectPressed = true;
+            if (this.userData.marker.visible) {
+                const pos = this.userData.marker.position;
+                console.log(`${pos.x.toFixed(3)}, 
+                    ${pos.y.toFixed(3)},
+                    ${pos.z.toFixed(3)}`);
+            }
+        }
+
+        function onSelectEnd() {
+            this.userData.selectPressed = false;
+        }
+
+        function onSqueezeStart() {
+            this.userData.squeezePressed = true;
+        }
+
+        function onSqueezeEnd() {
+            this.userData.squeezePressed = false;
+        }
+
+        const btn = new VRButton(this.renderer);
+
+        this.controllers = this.buildControllers();
+
+        this.controllers.forEach(controller => {
+            controller.addEventListener('selectstart', onSelectStart);
+            controller.addEventListener('selectend', onSelectEnd);
+            controller.addEventListener('squeezestart', onSqueezeStart);
+            controller.addEventListener('squeezeend', onSqueezeEnd);
+        });
+
+        this.collisionObjects = [this.navmesh];
     }
 
-    loadGLTF() {
-        const self = this;
-        const loader = new GLTFLoader().setPath('./Assets/Models/');
+    intersectObjects(controller) {
+        const line = controller.getObjectByName('ray');
+        this.workingMatrix.identity().extractRotation(controller.matrixWorld);
 
-        loader.load('BCh600/bbdc600.glb',
-            function (gltf) {
-                self.object = gltf.scene;
-                const bbox = new THREE.Box3().setFromObject(gltf.scene);
-                console.log('min:${vector3ToString(bbox.min, 2)} - max:${vector3ToString(bbox.max, 2)}');
-                self.scene.add(gltf.scene);
-                self.loadingBar.visible = false;
-                self.renderer.setAnimationLoop(self.render.bind(self));
-            },
-            function (xhr) {
-                self.loadingBar.progress = xhr.loaded / xhr.total;
-            },
-            function (err) {
-                console.log('Error notification');
+        this.raycaster.ray.origin.setFromMatrixPosition(controller.matrixWorld);
+        this.raycaster.ray.direction, set(0, 0, -1).applyMatrix4(this.workingMatrix);
+
+        const intersects = this.raycaster.intersectObjects(this.collisionObjects);
+        const marker = controller.userData.marker;
+        marker.visible = false;
+
+        controller.userData.teleport = undefined;
+
+        if (intersects.length > 0) {
+            const intersect = intersects[0];
+            line.scale.z = intersect.distance;
+
+            if (intersect.object === this.navmesh) {
+                marker.scale.set(1, 1, 1);
+                marker.position.copy(intersect.point);
+                marker.visible = true;
             }
-        )
+        }
     }
 
-    loadFBX() {
-        const self = this;
-        const loader = new GLTFLoader().setPath('./Assets/Models/');
+    createPlayer() {
+        const target = new THREE.Object3D();
+        target.position.set(-3, 0.25, 2);
 
-        loader.load('BCh600/bbdc600.fbx',
-            function (gltf) {
-                self.object = gltf.scene;
-                const bbox = new THREE.Box3().setFromObject(gltf.scene);
-                self.scene.add(gltf.scene);
-                self.loadingBar.visible = false;
-                self.renderer.setAnimationLoop(self.render.bind(self));
-            },
-            function (xhr) {
-                self.loadingBar.progress = xhr.loaded / xhr.total;
-            },
-            function (err) {
-                console.log('Error notification');
-            }
-        )
+        const options = {
+            object: target,
+            speed: 5,
+            app: this,
+            name: 'player',
+            npc: false
+        };
+
+        const player = new Player(options);
+
+        this.dolly = THREE.Object3D();
+        this.dolly.position.set(0, -0.25, 0);
+        this.dolly.add(this.camera);
+
+        this.dummyCam = THREE.Object3D();
+        this.camera.add(this.dummyCam);
+
+        target.add(this.dolly);
+
+        this.dolly.rotation.y = Math.PI;
+
+        return player;
     }
 
     resize() {
@@ -404,9 +306,22 @@ class App {
 
     render() {
         const dt = this.clock.getDelta();
+        const self = this;
+
+        this.sun.position.copy(this.dummyCam.position);
+        this.sun.position.y += 10;
+        this.sun.position.z += 10;
+
         this.stats.update();
-        if (this.controller) this.handleController(this.controller, dt);
-         this.renderer.render(this.scene, this.camera);
+
+        if (this.renderer.xr.isPresenting) {
+            this.controllers.forEach(controller => {
+                self.intersectObjects(controller);
+            })
+            this.player.update(dt);
+        }
+
+        this.renderer.render(this.scene, this.camera);
     }
 }
 
