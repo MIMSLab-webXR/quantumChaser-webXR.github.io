@@ -1,4 +1,4 @@
-import { Mesh, PlaneBufferGeometry, ShaderMaterial } from './three/three.module.js';
+import { Mesh, PlaneBufferGeometry, ShaderMaterial } from './THREE/three.module.js';
 
 const vshader = `
 varying vec2 vUv;

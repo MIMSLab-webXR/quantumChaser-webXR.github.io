@@ -1,4 +1,4 @@
-import { Mesh, Vector3 } from "./three/three.module.js";
+import { Mesh, Vector3 } from "./THREE/three.module.js";
 
 class RotationalConstraint{
     constructor( mesh, options = { axis:'x', min: 0, max: Math.PI, returnSpeed: 0.1 } ){

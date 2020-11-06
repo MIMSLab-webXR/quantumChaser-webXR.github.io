@@ -10,15 +10,15 @@ import {
 	Object3D,
 	Quaternion,
 	SphereGeometry,
-} from "./three/three.module.js";
+} from "./THREE/three.module.js";
 
-import { GLTFLoader } from './three/jsm/GLTFLoader.js';
+import { GLTFLoader } from './THREE/jsm/GLTFLoader.js';
 
 import {
 	Constants as MotionControllerConstants,
 	fetchProfile,
 	MotionController
-} from './three/jsm/motion-controllers.module.js';
+} from './THREE/jsm/motion-controllers.module.js';
 
 const DEFAULT_PROFILES_PATH = 'https://cdn.jsdelivr.net/npm/@webxr-input-profiles/assets@1.0/dist/profiles';
 const DEFAULT_PROFILE = 'generic-trigger';
