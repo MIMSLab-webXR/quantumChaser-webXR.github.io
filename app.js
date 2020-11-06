@@ -10,52 +10,64 @@ import { Stats } from './Library/stats.module.js';
 import { LoadingBar } from './Library/LoadingBar.js';
 import { vector3ToString } from './Library/DebugUtils.js';
 import { CanvasUI } from './Library/CanvasUI.js';
+import { CanvasKeyboard } from './Library/CanvasKeyboard.js';
+import { XRWorldMeshes } from './Library/XRWorldMeshesjs';
+import { TeleportMesh } from './Library/TeleportMesh.js';
+import { Player } from './Library/Player.js';
+import { RGBELoader } from './Library/THREE/jsm/RGBELoader.js';
 import {
     Constants as MotionControllerConstants,
     fetchProfile,
     MotionController
 } from './Library/THREE/jsm/motion-controllers.module.js';
 
-const DEFAULT_PROFILES_PATH = 'https://cdn.jsdelivr.net/npm/@webze-input-profiles/assets@1.0/dist/profiles';
-const DEFAULT_PROFILE = "generic-trigger";
+//const DEFAULT_PROFILES_PATH = 'https://cdn.jsdelivr.net/npm/@webze-input-profiles/assets@1.0/dist/profiles';
+//const DEFAULT_PROFILE = "generic-trigger";
 
 class App {
     constructor() {
         const container = document.createElement('div');
         document.body.appendChild(container);
 
-        this.clock = new THREE.Clock();
+        this.assetsPath = './Assets/';
 
         this.camera = new THREE.PerspectiveCamera(60,
-            window.innerWidth / window.innerHeight, 0.1, 200);
+            window.innerWidth / window.innerHeight, 0.1, 3000);
         this.camera.position.set(0, 1.6, 5);
 
         this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color(0x505050);
 
-        const ambient = new THREE.HemisphereLight(0xFFFFFF, 0x404040);
+        const ambient = new THREE.HemisphereLight(0x555555, 0x999999);
         this.scene.add(ambient);
 
-        const light = new THREE.DirectionalLight(0xFFFFFF);
-        light.position.set(1, 1, 1).normalize();
-        this.scene.add(light);
+        this.sun = new THREE.DirectionalLight(0xAAAAFF, 2.5);
+        this.sun.castShadow = true;
+
+        const lightSize = 5;
+        this.sun.shadow.camera.near = 0.1;
+        this.sun.shadow.camera.far = 17;
+        this.sun.shadow.camera.left = this.sun.shadow.camera.bottom = -lightSize;
+        this.sun.shadow.camera.right = this.sun.shadow.camera.top = lightSize;
+
+        this.sun.shadow.mapSize.width = 1024;
+        this.shadow.mapSize.height = 1024;
+
+        this.sun.position.set(0, 10, 10);
+        this.scene.add(this.sun);
 
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.shadowMap.enabled = true;
         this.renderer.outputEncoding = THREE.sRGBEncoding;
-
         container.appendChild(this.renderer.domElement);
+        this.setEnvironment();
 
-        //this.loadingBar = new LoadingBar();
-        //this.loadGLTF();
-        ////this.loadFBX();
-
-        this.controls = new OrbitControls(
-            this.camera,
-            this.renderer.domElement);
-        this.controls.target.set(0, 1.6, 0);
-        this.controls.update();
+        //this.controls = new OrbitControls(
+        //    this.camera,
+        //    this.renderer.domElement);
+        //this.controls.target.set(0, 1.6, 0);
+        //this.controls.update();
 
         this.stats = new Stats();
         document.body.appendChild(this.stats.dom);
@@ -65,12 +77,25 @@ class App {
         this.workingVector = new THREE.Vector3();
         this.origin = new THREE.Vector3();
 
-        this.initScene();
-        this.setupVR();
+        this.clock = new THREE.Clock();
+
+        this.loadingBar = new LoadingBar();
+
+        this.loadEnvironment();
+
+        this.loading = true;
 
         window.addEventListener('resize', this.resize.bind(this));
+    }
 
-        this.renderer.setAnimationLoop(this.render.bind(this));
+    setEnvironment() {
+        const loader = new RGBELoader().setDataType(THREE.UnsignedByteType);
+        const pmremGenerator = new THREE.PMREMGenerator(this.renderer);
+        pmremGenerator.compileEquirectangularShader();
+
+        const self = this;
+
+        loader.load('');
     }
 
     random(min, max) {
@@ -162,6 +187,14 @@ class App {
         //this.scene.add(this.dummyCam);
     }
 
+    createUI() {
+        this.ui = new CanvasUI();
+        this.ui.updateElement("body", "Hello World!");
+        this.ui.update();
+        this.ui.mesh.position.set(0, 1.5, -1.2);
+        this.scene.add(this.ui.mesh);
+    }
+
     setupVR() {
         this.renderer.xr.enabled = true;
 
@@ -228,14 +261,6 @@ class App {
         //    controller.addEventListener('selectstart', onSelectStart);
         //    controller.addEventListener('selectend', onSelectEnd);
         //});
-    }
-
-    createUI() {
-        this.ui = new CanvasUI();
-        this.ui.updateElement("body", "Hello World!");
-        this.ui.update();
-        this.ui.mesh.position.set(0, 1.5, -1.2);
-        this.scene.add(this.ui.mesh);
     }
 
     buildControllers() {
@@ -358,7 +383,6 @@ class App {
             function (gltf) {
                 self.object = gltf.scene;
                 const bbox = new THREE.Box3().setFromObject(gltf.scene);
-                console.log('min:${vector3ToString(bbox.min, 2)}$ - max:${vector3ToString(bbox.max, 2)}$');
                 self.scene.add(gltf.scene);
                 self.loadingBar.visible = false;
                 self.renderer.setAnimationLoop(self.render.bind(self));
@@ -382,13 +406,7 @@ class App {
         const dt = this.clock.getDelta();
         this.stats.update();
         if (this.controller) this.handleController(this.controller, dt);
-        //if (this.controllers) {
-        //    const self = this;
-        //    this.controllers.forEach((controller) => {
-        //        self.handleController(controller)
-        //    });
-        //}
-        this.renderer.render(this.scene, this.camera);
+         this.renderer.render(this.scene, this.camera);
     }
 }
 
