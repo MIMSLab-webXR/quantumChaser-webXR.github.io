@@ -111,7 +111,7 @@ class App {
         const self = this;
 
         //Load a glTF resource
-        loader.load('dungeon.glb',
+        loader.load('TrainingKits/dungeon.glb',
             function (gltf) {
                 const scale = 0.5;
 
