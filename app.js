@@ -316,11 +316,11 @@ class App {
 
         const player = new Player(options);
 
-        this.dolly = THREE.Object3D();
+        this.dolly = new THREE.Object3D();
         this.dolly.position.set(0, -0.25, 0);
         this.dolly.add(this.camera);
 
-        this.dummyCam = THREE.Object3D();
+        this.dummyCam = new THREE.Object3D();
         this.camera.add(this.dummyCam);
 
         target.add(this.dolly);
