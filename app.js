@@ -95,7 +95,7 @@ class App {
 
         const self = this;
 
-        loader.load('./Assets/TrainingKits/hdr/venice_sunset_1k.hdr', (texture) => {
+        loader.load('.\Assets\TrainingKits\hdr\venice_sunset_1k.hdr', (texture) => {
             const envMap = pmremGenerator.fromEquirectangular(texture).texture;
             pmremGenerator.dispose();
 
@@ -114,7 +114,7 @@ class App {
         // Load a glTF resource
         loader.load(
             // resource URL
-            './TrainingKits/dungeon.glb',
+            '.\TrainingKits\dungeon.glb',
             // called when the resource is loaded
             function (gltf) {
                 const scale = 0.5;
