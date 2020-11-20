@@ -24,43 +24,76 @@ import {
 
 class App {
 	constructor ( ) {
+
+		// Setting up a container
+
+		const container = document.createElement('div');
+		document.body.appendChild(container);
+
+
+		// Importing the asset path
+
+		this.assetPath = "./Assets/";
+
+		// Setting up the renderer
+
+		this.renderer = new THREE.WebGLRenderer();
+		this.renderer.setPixelRatio(window.devicePixelRatio);
+		renderer.setSize( window.innerWidth, window.innerHeight );
+		this.renderer.shadowMap.enabled = true;
+		this.renderer.outputEncoding = THREE.sRGBEncoding;
+		document.body.appendChild( this.renderer.domElement );
 		
 		// Setting up the scene
 
-		const scene = new THREE.Scene();
+		this.scene = new THREE.Scene();
 
 		// Setting up the camera
 
-		const camera = new THREE.PerspectiveCamera(
+		this.camera = new THREE.PerspectiveCamera(
 			75,	// FOV
 			window.innerWidth / window.innerHeight,	// Aspect Ratio
 			0.1,	// Nearest plane
 			1000	// Farthest plane
 		);
 
-		// Setting up the renderer
+		// Setting up the light
 
-		const renderer = new THREE.WebGLRenderer;
-		renderer.setSize( window.innerWidth, window.innerHeight );
-		document.body.appendChild( renderer.domElement );
+		this.ambient = new THREE.HemisphereLight( 0x555555, 0x555555 );
+		this.scene.add( this.ambient );
 
-		// Setting up a test geometry
-		const geometry = new THREE.BoxGeometry();
-		const material = new THREE.MeshBasicMaterial( { color: 0x00FF00 } );
-		const mesh = new THREE.Mesh( geometry, material );
-		scene.add( mesh );
+		this.light = new THREE.DirectionalLight( 0xAAAAFF, 2.5 );
+		this.light.castShadow = true;
+		this.light.position.set(0, 10, 10);
+		this.scene.add( this.light );
 
-		cmaera.position.z = -1.6;
+		// Setting up a raycaster
+		this.raycaster = new THREE.Raycaster();
+		this.workingMatrix = new THREE.Matrix4();
+		this.workingVector = new THREE.Vector3();
+		this.origin = new THREE.Vector3();
+		
+		this.fpsShow( this );
+		this.animate( this );
 
-		function animate(){
-			requestAnimationFrame( animate );
+		window.addEventListener( 'resize', this.resize.bind( this ) );
+	}
 
-			mesh.rotation.x += 0.01;
-			mesh.rotation.y += 0.01;
+	fpsShow( ){
+		this.stats = new Stats();
+		document.body.appendChild( this.stats.dom );
+	}
 
-			renderer.render( scene, camera );
-		}
-		animate();
+	resize(){
+		this.camera.aspect = window.innerWidth / window.innerHeight;
+		this.camera.updateProjectionMatrix();
+		this.renderer.setSize( window.innerWidth, window.innerHeight );
+	}
+
+	animate( ) {
+		requestAnimationFrame( animate );
+		this.stats.update();
+		this.renderer.render( this.scene, this.camera );
 	}
 }
 
