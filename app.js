@@ -91,7 +91,7 @@ class App {
 	}
 
 	animate( ) {
-		requestAnimationFrame( animate );
+		requestAnimationFrame( this.animate );
 		this.stats.update();
 		this.renderer.render( this.scene, this.camera );
 	}
