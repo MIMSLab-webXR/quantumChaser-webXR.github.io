@@ -39,7 +39,7 @@ class App {
 
 		this.renderer = new THREE.WebGLRenderer();
 		this.renderer.setPixelRatio(window.devicePixelRatio);
-		renderer.setSize( window.innerWidth, window.innerHeight );
+		this.renderer.setSize( window.innerWidth, window.innerHeight );
 		this.renderer.shadowMap.enabled = true;
 		this.renderer.outputEncoding = THREE.sRGBEncoding;
 		document.body.appendChild( this.renderer.domElement );
