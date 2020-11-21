@@ -106,13 +106,15 @@ class App {
         this.initScene();
         this.setupXR();
 
+        this.renderer.setAnimationLoop(this.render.bind(this));
+
         window.addEventListener('resize', this.resize.bind(this));
     }
 
     initScene() {
         // Layer 1 - Sky shader
 
-        this.textureSky = new THREE.TextureLoader().load('./Images/Sky.jpg');
+        this.textureSky = new THREE.TextureLoader().load('./Assets/Images/Sky.jpg');
         this.geometryUniverse = new THREE.BoxBufferGeometry(100, 100, 100);
         this.materialUniverse = new THREE.MeshBasicMaterial({ map: this.textureSky, side: THREE.BackSide });
         this.universe = new THREE.Mesh(this.geometryUniverse, this.materialUniverse);
