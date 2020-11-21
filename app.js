@@ -138,10 +138,10 @@ class App {
     }
 
     sun() {
-        const sunCtr = [10, 10, 10];    // Static position for now
+        const sunCtr = [100, 100, 100];    // Static position for now
 
         this.textureSun = new THREE.TextureLoader().load('./Assets/Images/sun.png');
-        this.geometrySun = new THREE.SphereBufferGeometry(5);
+        this.geometrySun = new THREE.SphereBufferGeometry(5, 100, 100);
         this.materialSun = new THREE.MeshBasicMaterial({ map: this.textureSun });
         this.sun = new THREE.Mesh(this.geometrySun, this.materialSun);
         this.sun.position.set(sunCtr[0], sunCtr[1], sunCtr[2]);
