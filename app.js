@@ -78,7 +78,7 @@ class App {
         // FPS count - Realtime
 
         this.fpvCounter = new Stats();
-        document.body.appendChild(this.stats.dom);
+        document.body.appendChild(this.stats.domElement);
 
         // Setting up an Orbit Control point to allow the camera to orient
         // per the head movement
