@@ -73,7 +73,7 @@ class App {
 
         this.hemisphereLight = new THREE.HemisphereLight(0xFFFFBB, 0X080820);
         this.scene.add(this.hemisphereLight);
-        this.hemisphereLight.position(0, 10, 0);
+        this.hemisphereLight.position.set(0, 10, 0);
 
         // FPS count - Realtime
 
