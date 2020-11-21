@@ -139,7 +139,8 @@ class App {
     }
 
     render() {
-        window.requestAnimationFrame(render);
+        this.fpvCounter.update();
+
         this.renderer.render(this.scene, this.camera);
     }
 }
