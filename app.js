@@ -107,7 +107,7 @@ class App {
         // Calling the objects and actors
 
         this.initScene();
-        this.setupXR();
+        //this.setupXR();
 
         this.renderer.setAnimationLoop(this.render.bind(this));
 
@@ -130,7 +130,7 @@ class App {
 
     setupXR() {
         this.renderer.xr.enabled = true;
-        document.body.appendChild(VRButton.createButton(this.renderer));
+        document.body.appendChild(VRButton.createB);
     }
 
     loadStaticModels() {
