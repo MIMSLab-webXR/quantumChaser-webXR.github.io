@@ -115,13 +115,9 @@ class App {
     }
 
     initScene() {
-        // Layer 1 - Sky shader
-
-        this.textureSky = new THREE.TextureLoader().load('./Assets/Images/Sky.jpg');
-        this.geometryUniverse = new THREE.SphereBufferGeometry(100, 100, 100);
-        this.materialUniverse = new THREE.MeshBasicMaterial({ map: this.textureSky, side: THREE.BackSide });
-        this.universe = new THREE.Mesh(this.geometryUniverse, this.materialUniverse);
-        this.scene.add(this.universe);
+        this.skybox();      // Layer 1 - Sky shader
+        this.sun();         // Layer 2 - Sun
+        this.ground();      // Layer 3 - Floor/Ground
     }
 
     updateScene() {
@@ -131,6 +127,33 @@ class App {
     setupXR() {
         this.renderer.xr.enabled = true;
         document.body.appendChild(VRButton.createButton(this.renderer));
+    }
+
+    skybox() {
+        this.textureSky = new THREE.TextureLoader().load('./Assets/Images/Sky.jpg');
+        this.geometryUniverse = new THREE.BoxBufferGeometry(1000, 1000, 1000);
+        this.materialUniverse = new THREE.MeshBasicMaterial({ map: this.textureSky, side: THREE.BackSide });
+        this.universe = new THREE.Mesh(this.geometryUniverse, this.materialUniverse);
+        this.scene.add(this.universe);
+    }
+
+    sun() {
+        const sunCtr = [10, 10, 10];    // Static position for now
+
+        this.textureSun = new THREE.TextureLoader().load('./Assets/Images/sun.png');
+        this.geometrySun = new THREE.SphereBufferGeometry(5);
+        this.materialSun = new THREE.MeshBasicMaterial({ map: this.textureSun });
+        this.sun = new THREE.Mesh(this.geometrySun, this.materialSun);
+        this.sun.position.set(sunCtr[0], sunCtr[1], sunCtr[2]);
+        this.scene.add(this.sun);
+
+        this.sunlight = new THREE.PointLight(0xFFFFFF, 1);
+        this.sunlight.position.set(sunCtr[0], sunCtr[1], sunCtr[2]);
+        this.scene.add(this.sunlight);
+    }
+
+    ground() {
+
     }
 
     loadStaticModels() {
