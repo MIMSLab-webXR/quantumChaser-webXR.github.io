@@ -55,7 +55,8 @@ class App {
         // 1 - Directional Light: Emitted in a specific direction; emulates sunrays
         // Inputs - color, intensity
 
-        this.directionalLight = new THREE.DirectionalLight(0xFFFFFF, 0.5);
+        this.directionalLight = new THREE.DirectionalLight(
+            0xFFFFFF, 0.5);
         this.scene.add(this.directionalLight);
         this.directionalLight.position.set(0, 10, 0);
 
@@ -66,12 +67,13 @@ class App {
         // 2 - Ambient Light: Illuminates all present objects in the scene equally
 
         this.ambient = new THREE.AmbientLight(0x404040);
-        this.scene.add(this.light);
+        this.scene.add(this.ambient);
 
         // 3 - Hemisphere Light: Positioned directly above the scene, 
         // with color fading from the sky color to the ground color
 
-        this.hemisphereLight = new THREE.HemisphereLight(0xFFFFBB, 0X080820);
+        this.hemisphereLight = new THREE.HemisphereLight(
+            0xFFFFBB, 0X080820);
         this.scene.add(this.hemisphereLight);
         this.hemisphereLight.position.set(0, 10, 0);
 
@@ -83,7 +85,8 @@ class App {
         // Setting up an Orbit Control point to allow the camera to orient
         // per the head movement
 
-        this.orbitControl = new OrbitControls(this.camera, this.renderer.domElement);
+        this.orbitControl = new OrbitControls(
+            this.camera, this.renderer.domElement);
         this.orbitControl.target.set(0, 3.5, 0);
         this.orbitControl.update();
 
@@ -127,7 +130,7 @@ class App {
 
     setupXR() {
         this.renderer.xr.enabled = true;
-        document.body.appendChild(VRButton.create(this.renderer));
+        document.body.appendChild(VRButton.createButton(this.renderer));
     }
 
     loadStaticModels() {
