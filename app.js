@@ -47,7 +47,7 @@ class App {
         this.renderer = new THREE.WebGL1Renderer();
         this.renderer.setPixelRatio(window.devicePixelRatio);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.outputEncoding = new THREE.sRGBEncoding;
+        this.renderer.outputEncoding = THREE.sRGBEncoding;
         document.body.appendChild(this.renderer.domElement);
 
         // Setting up lighting
