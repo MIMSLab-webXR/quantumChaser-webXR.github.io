@@ -118,7 +118,7 @@ class App {
         // Layer 1 - Sky shader
 
         this.textureSky = new THREE.TextureLoader().load('./Assets/Images/Sky.jpg');
-        this.geometryUniverse = new THREE.BoxBufferGeometry(100, 100, 100);
+        this.geometryUniverse = new THREE.SphereBufferGeometry(100, 100, 100);
         this.materialUniverse = new THREE.MeshBasicMaterial({ map: this.textureSky, side: THREE.BackSide });
         this.universe = new THREE.Mesh(this.geometryUniverse, this.materialUniverse);
         this.scene.add(this.universe);
@@ -130,7 +130,7 @@ class App {
 
     setupXR() {
         this.renderer.xr.enabled = true;
-        document.body.appendChild(VRButton.createB);
+        document.body.appendChild(VRButton.createButton(this.renderer));
     }
 
     loadStaticModels() {
