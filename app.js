@@ -131,14 +131,14 @@ class App {
 
     skybox() {
         this.textureSky = new THREE.TextureLoader().load('./Assets/Images/Sky.jpg');
-        this.geometryUniverse = new THREE.BoxBufferGeometry(1000, 1000, 1000);
+        this.geometryUniverse = new THREE.SphereBufferGeometry(1000);
         this.materialUniverse = new THREE.MeshBasicMaterial({ map: this.textureSky, side: THREE.BackSide });
         this.universe = new THREE.Mesh(this.geometryUniverse, this.materialUniverse);
         this.scene.add(this.universe);
     }
 
     sun() {
-        const sunCtr = [100, 100, 100];    // Static position for now
+        const sunCtr = [10, 10, 10];    // Static position for now
 
         this.textureSun = new THREE.TextureLoader().load('./Assets/Images/sun.png');
         this.geometrySun = new THREE.SphereBufferGeometry(5, 100, 100);
