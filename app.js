@@ -131,7 +131,7 @@ class App {
 
     skybox() {
         this.textureSky = new THREE.TextureLoader().load('./Assets/Images/Sky.jpg');
-        this.geometryUniverse = new THREE.SphereBufferGeometry(1000);
+        this.geometryUniverse = new THREE.SphereBufferGeometry(10000, 100);
         this.materialUniverse = new THREE.MeshBasicMaterial({ map: this.textureSky, side: THREE.BackSide });
         this.universe = new THREE.Mesh(this.geometryUniverse, this.materialUniverse);
         this.scene.add(this.universe);
@@ -168,6 +168,9 @@ class App {
 
     render() {
         this.fpvCounter.update();
+
+        this.skybox.rotateY += 0.01;
+        this.sunlight.rotateY += 0.005;
 
         this.renderer.render(this.scene, this.camera);
     }
