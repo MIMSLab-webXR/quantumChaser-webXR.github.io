@@ -2,7 +2,7 @@ import * as THREE from './Library/THREE/three.module.js';
 import { OrbitControls } from './Library/THREE/jsm/OrbitControls.js';
 import { GLTFLoader } from './Library/THREE/jsm/GLTFLoader.js';
 import { FBXLoader } from './Library/THREE/jsm/FBXLoader.js';
-import { VRButton } from './Library/VRButton.js';
+import { VRButton } from './Library/THREE/jsm/VRButton.js';
 import { ARButton } from './Library/THREE/jsm/ARButton.js';
 import { XRControllerModelFactory } from './Library/THREE/jsm/XRControllerModelFactory.js';
 import { BoxLineGeometry } from './Library/THREE/jsm/BoxLineGeometry.js';
@@ -107,7 +107,7 @@ class App {
         // Calling the objects and actors
 
         this.initScene();
-        //this.setupXR();
+        this.setupXR();
 
         this.renderer.setAnimationLoop(this.render.bind(this));
 
@@ -131,7 +131,7 @@ class App {
 
     skybox() {
         this.textureSky = new THREE.TextureLoader().load('./Assets/Images/Sky.jpg');
-        this.geometryUniverse = new THREE.SphereBufferGeometry(10000, 100);
+        this.geometryUniverse = new THREE.SphereBufferGeometry(1000, 100);
         this.materialUniverse = new THREE.MeshBasicMaterial({ map: this.textureSky, side: THREE.BackSide });
         this.universe = new THREE.Mesh(this.geometryUniverse, this.materialUniverse);
         this.scene.add(this.universe);
@@ -139,17 +139,24 @@ class App {
 
     sun() {
         const sunCtr = [100, 100, 100];    // Static position for now
+        this.sun = new THREE.Group();
 
-        //this.textureSun = new THREE.TextureLoader().load('./Assets/Images/sun.png');
-        //this.geometrySun = new THREE.SphereBufferGeometry(5, 100, 100);
-        //this.materialSun = new THREE.MeshBasicMaterial({ map: this.textureSun });
-        //this.sun = new THREE.Mesh(this.geometrySun, this.materialSun);
-        //this.sun.position.set(sunCtr[0], sunCtr[1], sunCtr[2]);
-        //this.scene.add(this.sun);
+        this.textureSun = new THREE.TextureLoader().load('./Assets/Images/sun.png');
+        this.geometrySun = new THREE.SphereBufferGeometry(5, 100, 100);
+        this.materialSun = new THREE.MeshBasicMaterial({ map: this.textureSun });
+        this.sun = new THREE.Mesh(this.geometrySun, this.materialSun);
+        this.sun.position.set(sunCtr[0], sunCtr[1], sunCtr[2]);
+        this.sun.add(this.sun);
 
-        this.sunlight = new THREE.PointLight(0xFFFFFF, 1);
-        this.sunlight.position.set(sunCtr[0], sunCtr[1], sunCtr[2]);
-        this.scene.add(this.sunlight);
+        this.sunPlight = new THREE.PointLight(0xFFFFFF, 0.5);
+        this.sunPlight.position.set(sunCtr[0], sunCtr[1], sunCtr[2]);
+        this.sun.add(this.sunPlight);
+
+        this.sunDlight = new THREE.DirectionalLight(0xFFFFFF, 0.5);
+        this.sunDlight.position.set(sunCtr[0], sunCtr[1], sunCtr[2]);
+        this.sun.add(this.sunDlight);
+
+        this.scene.add(this.sun);
     }
 
     ground() {
@@ -169,8 +176,8 @@ class App {
     render() {
         this.fpvCounter.update();
 
-        this.skybox.rotateY += 0.01;
-        this.sunlight.rotateY += 0.005;
+        //this.skybox += 0.01;
+        //this.sunlight.rotateY += 0.005;
 
         this.renderer.render(this.scene, this.camera);
     }
