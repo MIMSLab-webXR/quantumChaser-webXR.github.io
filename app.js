@@ -109,7 +109,7 @@ class App {
         this.initScene();
         this.setupXR();
         //visually add an origin to the general scene to see orientation for each axis (from three.js documentation):
-        this.axesHelper = new THREE.AxesHelper(5);
+        this.axesHelper = new THREE.AxesHelper(15);
         this.scene.add(this.axesHelper);
 
         
@@ -182,10 +182,11 @@ class App {
         //this.groundGeo.dynamic = true; //allows for geometry to change
         this.groundGeo.mergeVertices(); // checks for duplicate vertices then removes them
 
-        //find out info. on cube vertices and faces:
+        //find out info. on cube vertices and faces by printing to console:
+        /*
         console.log(this.groundGeo.faces);
         console.log(this.groundGeo.vertices);
-
+        */
         
         const xRange = [0,33];
         const yRange = [0, 33];
@@ -193,8 +194,8 @@ class App {
         var numbVertices = this.groundGeo.vertices.length;
         //generate random vertices and each time site is rendered: (ie-new terrain each time)
         for (var i = 0; i < numbVertices; i++) {
-            this.groundGeo.vertices[i].x = xRange[0] + Math.random() * (xRange[1] - xRange[0]); // use struture of xmin + Math.random() * (xmax-xmin) equation since Math.random() returns a numb from 0-1.
-            this.groundGeo.vertices[i].y = yRange[0] + Math.random() * (yRange[1] - yRange[0]);
+            //this.groundGeo.vertices[i].x = xRange[0] + Math.random() * (xRange[1] - xRange[0]); // use struture of xmin + Math.random() * (xmax-xmin) equation since Math.random() returns a numb from 0-1.
+            //this.groundGeo.vertices[i].y = yRange[0] + Math.random() * (yRange[1] - yRange[0]);
             this.groundGeo.vertices[i].z = zRange[0] + Math.random() * (zRange[1] - zRange[0]);
             this.groundGeo.mergeVertices(); // checks for duplicate vertices then removes them
 
@@ -206,7 +207,6 @@ class App {
         }
 
         // adding grid-lines/wireframe to geometry for better segment visualization: from==>https://discourse.threejs.org/t/about-showing-grid-lines/13616
-        //this.wireframeMat = new THREE.LineBasicMaterial({color: 0x000000}, {linewidth: 2});// changing grid line thickness and color
 
         this.wireframe = new THREE.WireframeGeometry(this.groundGeo);//,this.wireframeMat);
         this.line = new THREE.Line(this.wireframe);
@@ -219,15 +219,15 @@ class App {
         //Draw grid with static colors
         // materials
         this.groundMaterial = [];
-        this.Grass = new THREE.TextureLoader().load('./Assets/Images/Grass.png');
-        this.Runway = new THREE.TextureLoader().load('./Assets/Images/Runway.jpg');
+        this.Grass = new THREE.TextureLoader().load('./Assets/Images/Grass.jpg');
+        this.Cracked_mud = new THREE.TextureLoader().load('./Assets/Images/Cracked_mud.jpg');
         this.Gravel = new THREE.TextureLoader().load('./Assets/Images/Gravel.jpg');
 
 
 
-        this.groundMaterial.push(new THREE.MeshBasicMaterial({map: this.Grass}));
+        this.groundMaterial.push(new THREE.MeshBasicMaterial({map: this.Grass})); // .push command is like pythons .append command (appends values to end of array)
         this.groundMaterial.push(new THREE.MeshBasicMaterial({ map: this.Gravel }));
-        this.groundMaterial.push(new THREE.MeshBasicMaterial({ map: this.Runway }));
+        this.groundMaterial.push(new THREE.MeshBasicMaterial({ map: this.Cracked_mud }));
         
         // Add materialIndex to face
         
@@ -243,7 +243,7 @@ class App {
 
         }
         for (var i = Math.floor(numbFaces *2 / 3); i < numbFaces; i++) {
-            this.groundGeo.faces[i].materialIndex = 2; //select Runway
+            this.groundGeo.faces[i].materialIndex = 2; //select Cracked mud
             this.groundGeo.elementsNeedUpdate = true;
 
         }
