@@ -65,7 +65,7 @@ class App {
         // .target (targeted object for the light effect)
 
         // 2 - Ambient Light: Illuminates all present objects in the scene equally
-
+        
         this.ambient = new THREE.AmbientLight(0x404040);
         this.scene.add(this.ambient);
 
@@ -76,7 +76,7 @@ class App {
             0xFFFFBB, 0X080820);
         this.scene.add(this.hemisphereLight);
         this.hemisphereLight.position.set(0, 10, 0);
-
+    
         // FPS count - Realtime
 
         this.fpvCounter = new Stats();
@@ -108,7 +108,11 @@ class App {
 
         this.initScene();
         this.setupXR();
+        //visually add an origin to the general scene to see orientation for each axis (from three.js documentation):
+        this.axesHelper = new THREE.AxesHelper(5);
+        this.scene.add(this.axesHelper);
 
+        
         this.renderer.setAnimationLoop(this.render.bind(this));
 
         window.addEventListener('resize', this.resize.bind(this));
@@ -138,7 +142,7 @@ class App {
     }
 
     sun() {
-        const sunCtr = [100, 100, 100];    // Static position for now
+        const sunCtr = [0, 0, 100];    // Static position for now
         this.sun = new THREE.Group();
 
         this.textureSun = new THREE.TextureLoader().load('./Assets/Images/sun.png');
@@ -160,6 +164,104 @@ class App {
     }
 
     ground() {
+        //---------------------create ground plane: ----------------------------
+        /*
+        ========================REFERENCES:===================================
+        (using buffer geometry as its faster however harder to manipulate )
+        1. how to manipulate buffer vertices: https://stackoverflow.com/questions/49956422/what-is-difference-between-boxbuffergeometry-vs-boxgeometry-in-three-js
+        2. how to manipulate non buffer-plane vertices: https://grahamweldon.com/post/2012/01/3d-terrain-generation-with-three.js/
+
+        */
+
+        const groundDim = [100,100,3]; //w,h,depth
+        const numbGroundSeg = [20,20,5];
+        const groundLocation = [0, -50, 0]; //location of origin for object
+
+        this.groundGeo = new THREE.BoxGeometry(groundDim[0], groundDim[1], groundDim[2], numbGroundSeg[0], numbGroundSeg[1], numbGroundSeg[2]); //(width,height,depth #widthSegments,#heightSegments,#depthSegments)
+        
+        //this.groundGeo.dynamic = true; //allows for geometry to change
+        this.groundGeo.mergeVertices(); // checks for duplicate vertices then removes them
+
+        //find out info. on cube vertices and faces:
+        console.log(this.groundGeo.faces);
+        console.log(this.groundGeo.vertices);
+
+        
+        const xRange = [0,33];
+        const yRange = [0, 33];
+        const zRange = [0, 3];
+        var numbVertices = this.groundGeo.vertices.length;
+        //generate random vertices and each time site is rendered: (ie-new terrain each time)
+        for (var i = 0; i < numbVertices; i++) {
+            this.groundGeo.vertices[i].x = xRange[0] + Math.random() * (xRange[1] - xRange[0]); // use struture of xmin + Math.random() * (xmax-xmin) equation since Math.random() returns a numb from 0-1.
+            this.groundGeo.vertices[i].y = yRange[0] + Math.random() * (yRange[1] - yRange[0]);
+            this.groundGeo.vertices[i].z = zRange[0] + Math.random() * (zRange[1] - zRange[0]);
+            this.groundGeo.mergeVertices(); // checks for duplicate vertices then removes them
+
+            this.groundGeo.verticesNeedUpdate = true;
+            //this.groundGeo.dynamic = true; //allows for geometry to change
+
+           // this.groundGeo._dirtyVertices = true;
+            //groundGeo.computeCentroids(); // allows PlaneGeometry to not appear flat after vertice changes
+        }
+
+        // adding grid-lines/wireframe to geometry for better segment visualization: from==>https://discourse.threejs.org/t/about-showing-grid-lines/13616
+        //this.wireframeMat = new THREE.LineBasicMaterial({color: 0x000000}, {linewidth: 2});// changing grid line thickness and color
+
+        this.wireframe = new THREE.WireframeGeometry(this.groundGeo);//,this.wireframeMat);
+        this.line = new THREE.Line(this.wireframe);
+        this.line.material.depthTest = true;
+        this.line.material.opacity =1;
+        this.line.material.transparent = true;
+        
+        //applying textures to specific faces: from==> https://stackoverflow.com/questions/48385258/threejs-planegeometry-load-texture-to-specific-faces
+
+        //Draw grid with static colors
+        // materials
+        this.groundMaterial = [];
+        this.Grass = new THREE.TextureLoader().load('./Assets/Images/Grass.png');
+        this.Runway = new THREE.TextureLoader().load('./Assets/Images/Runway.jpg');
+        this.Gravel = new THREE.TextureLoader().load('./Assets/Images/Gravel.jpg');
+
+
+
+        this.groundMaterial.push(new THREE.MeshBasicMaterial({map: this.Grass}));
+        this.groundMaterial.push(new THREE.MeshBasicMaterial({ map: this.Gravel }));
+        this.groundMaterial.push(new THREE.MeshBasicMaterial({ map: this.Runway }));
+        
+        // Add materialIndex to face
+        
+        var numbFaces = this.groundGeo.faces.length;
+        for (var i = 0; i < Math.ceil(numbFaces/3); i++) {
+            this.groundGeo.faces[i].materialIndex = 0; //select Grass
+            this.groundGeo.elementsNeedUpdate = true;
+
+        }
+        for (var i = Math.floor(numbFaces/3); i < Math.ceil(numbFaces*2 / 3); i++) {
+            this.groundGeo.faces[i].materialIndex = 1; //select Gravel
+            this.groundGeo.elementsNeedUpdate = true;
+
+        }
+        for (var i = Math.floor(numbFaces *2 / 3); i < numbFaces; i++) {
+            this.groundGeo.faces[i].materialIndex = 2; //select Runway
+            this.groundGeo.elementsNeedUpdate = true;
+
+        }
+
+        
+        this.Ground = new THREE.Mesh(this.groundGeo, this.groundMaterial);
+        this.Ground.add(this.line);
+
+        //place its location:
+        this.Ground.position.set(groundLocation[0], groundLocation[1], groundLocation[2]);
+
+
+        this.scene.add(this.Ground);
+
+        
+
+
+        
 
     }
 
