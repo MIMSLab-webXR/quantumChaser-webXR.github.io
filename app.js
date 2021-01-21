@@ -24,162 +24,52 @@ import {
 
 class App {
     constructor() {
-        // Creating a container for the application
+        this.init();
+        this.animate();
+    }
 
-        const container = document.createElement('div');
+    init() {
+        container = document.createElement('div');
         document.body.appendChild(container);
 
-        // Setting up a scene
+        var scene = new THREE.Scene();
+        scene.background = new THREE.Color("#808080");
 
-        this.scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(0, 1.6, 3);
 
-        // Setting up a camera
+        var controls = new OrbitControls(camera, container);
+        controls.target.set(0, 1.6, 0);
+        controls.update();
 
-        this.camera = new THREE.PerspectiveCamera(
-            75, // FOV
-            window.innerWidth / window.innerHeight, // Aspect Ratio
-            0.1, // Nearest plane
-            1000 // Farthest plane
-        )
+        var floor = {};
+        floor.geometry = new THREE.PlaneBufferGeometry(4, 4);
+        floor.material = new THREE.MeshStandardMaterial({
+            color: "#eeeeee",
+            roughness: 1,
+            metalness: 0
+        });
+        floor.mesh = new THREE.Mesh(floor.geometry, floor.material);
+        floor.mesh.rotation.x = -Math.PI / 2;
+        floor.mesh.receiveShadow = true;
+        scene.add(floor);
 
-        // Setting up a WebGL renderer
-
-        this.renderer = new THREE.WebGL1Renderer();
-        this.renderer.setPixelRatio(window.devicePixelRatio);
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-        this.renderer.outputEncoding = THREE.sRGBEncoding;
-        document.body.appendChild(this.renderer.domElement);
-
-        // Setting up lighting
-
-        // 1 - Directional Light: Emitted in a specific direction; emulates sunrays
-        // Inputs - color, intensity
-
-        this.directionalLight = new THREE.DirectionalLight(
-            0xFFFFFF, 0.5);
-        this.scene.add(this.directionalLight);
-        this.directionalLight.position.set(0, 10, 0);
-
-        // Other properties include .castShadow (expensive, boolean),
-        // .shadow (calculate shadows for light)
-        // .target (targeted object for the light effect)
-
-        // 2 - Ambient Light: Illuminates all present objects in the scene equally
-
-        this.ambient = new THREE.AmbientLight(0x404040);
-        this.scene.add(this.ambient);
-
-        // 3 - Hemisphere Light: Positioned directly above the scene, 
-        // with color fading from the sky color to the ground color
-
-        this.hemisphereLight = new THREE.HemisphereLight(
-            0xFFFFBB, 0X080820);
-        this.scene.add(this.hemisphereLight);
-        this.hemisphereLight.position.set(0, 10, 0);
-
-        // FPS count - Realtime
-
-        this.fpvCounter = new Stats();
-        document.body.appendChild(this.fpvCounter.domElement);
-
-        // Setting up an Orbit Control point to allow the camera to orient
-        // per the head movement
-
-        this.orbitControl = new OrbitControls(
-            this.camera, this.renderer.domElement);
-        this.orbitControl.target.set(0, 3.5, 0);
-        this.orbitControl.update();
-
-        // Raycaster setting - Raycasting is used for input picking 
-        // (working out what objects in the 3D space the input pointer 
-        // is pointing towards).
-
-        this.raycaster = new THREE.Raycaster();
-
-        // Setting up a working matrix
-
-        this.workingMatrix = new THREE.Matrix4();
-
-        //Setting up a working vector
-
-        this.workingVector = new THREE.Vector3();
-
-        // Calling the objects and actors
-
-        this.initScene();
-        this.setupXR();
-
-        this.renderer.setAnimationLoop(this.render.bind(this));
-
-        window.addEventListener('resize', this.resize.bind(this));
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.outputEncoding = new THREE.sRGBEncoding;
+        renderer.shadowMap.enabled = true;
+        renderer.xr.enabled = true;
+        document.body.appendChild(renderer.domElement);
     }
 
-    initScene() {
-        this.skybox();      // Layer 1 - Sky shader
-        this.sun();         // Layer 2 - Sun
-        this.ground();      // Layer 3 - Floor/Ground
-    }
-
-    updateScene() {
+    xrSetup() {
 
     }
 
-    setupXR() {
-        this.renderer.xr.enabled = true;
-        document.body.appendChild(VRButton.createButton(this.renderer));
-    }
-
-    skybox() {
-        this.textureSky = new THREE.TextureLoader().load('./Assets/Images/Sky.jpg');
-        this.geometryUniverse = new THREE.SphereBufferGeometry(1000, 100);
-        this.materialUniverse = new THREE.MeshBasicMaterial({ map: this.textureSky, side: THREE.BackSide });
-        this.universe = new THREE.Mesh(this.geometryUniverse, this.materialUniverse);
-        this.scene.add(this.universe);
-    }
-
-    sun() {
-        const sunCtr = [100, 100, 100];    // Static position for now
-        this.sun = new THREE.Group();
-
-        this.textureSun = new THREE.TextureLoader().load('./Assets/Images/sun.png');
-        this.geometrySun = new THREE.SphereBufferGeometry(5, 100, 100);
-        this.materialSun = new THREE.MeshBasicMaterial({ map: this.textureSun });
-        this.sun = new THREE.Mesh(this.geometrySun, this.materialSun);
-        this.sun.position.set(sunCtr[0], sunCtr[1], sunCtr[2]);
-        this.sun.add(this.sun);
-
-        this.sunPlight = new THREE.PointLight(0xFFFFFF, 0.5);
-        this.sunPlight.position.set(sunCtr[0], sunCtr[1], sunCtr[2]);
-        this.sun.add(this.sunPlight);
-
-        this.sunDlight = new THREE.DirectionalLight(0xFFFFFF, 0.5);
-        this.sunDlight.position.set(sunCtr[0], sunCtr[1], sunCtr[2]);
-        this.sun.add(this.sunDlight);
-
-        this.scene.add(this.sun);
-    }
-
-    ground() {
-
-    }
-
-    loadStaticModels() {
-
-    }
-
-    resize() {
-        this.camera.aspect = window.innerWidth / window.innerHeight;
-        this.camera.updateProjectionMatrix();
-        this.renderer.setSize(window.innerWidth, window.innerHeight);
-    }
-
-    render() {
-        this.fpvCounter.update();
-
-        //this.skybox += 0.01;
-        //this.sunlight.rotateY += 0.005;
-
-        this.renderer.render(this.scene, this.camera);
+    animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
     }
 }
 
