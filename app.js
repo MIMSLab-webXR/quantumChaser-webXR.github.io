@@ -29,7 +29,7 @@ class App {
     }
 
     init() {
-        container = document.createElement('div');
+        var container = document.createElement('div');
         document.body.appendChild(container);
 
         var scene = new THREE.Scene();
