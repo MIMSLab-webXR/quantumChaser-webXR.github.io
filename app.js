@@ -53,7 +53,7 @@ function init() {
     //models
     const objLoader = new OBJLoader();
 
-    objLoader.setPath( 'models/obj/walt/' );
+    objLoader.setPath( './Assets/Models/Walt/' );
     objLoader.load( 'WaltHead.obj', function ( object ) {
 
         const head = object.children[ 0 ];
