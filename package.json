@@ -1,21 +1,31 @@
 {
-  "name": "testapp",
-  "version": "0.0.1",
-  "description": "Test app for WebXR applications",
-  "main": "./Library/THREE/three.js",
-  "module": "./Library/three.module.js",
+  "name": "three",
+  "version": "0.126.0",
+  "description": "JavaScript 3D library",
+  "main": "build/three.js",
+  "module": "build/three.module.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/quantumChaser-webXR/quantumChaser-webXR.github.io/index.html"
+    "url": "https://github.com/mrdoob/three.js"
   },
   "sideEffects": false,
   "files": [
-    "./Library/three.js",
-    "./Library/three.min.js",
-    "./Library/three.module.js",
+    "build/three.js",
+    "build/three.min.js",
+    "build/three.module.js",
+    "examples/js",
+    "examples/jsm",
+    "examples/fonts",
+    "LICENSE",
     "package.json",
-    "README.md"
+    "README.md",
+    "src"
   ],
+  "directories": {
+    "doc": "docs",
+    "example": "examples",
+    "test": "test"
+  },
   "eslintConfig": {
     "root": true,
     "extends": "mdcs",
@@ -35,6 +45,21 @@
         }
       ]
     }
+  },
+  "scripts": {
+    "start": "npm run dev",
+    "test": "npm run test-lint && npm run test-unit",
+    "build": "rollup -c utils/build/rollup.config.js",
+    "dev": "concurrently --names \"ROLLUP,HTTP\" -c \"bgBlue.bold,bgGreen.bold\" \"rollup -c utils/build/rollup.config.js -w -m inline\" \"servez -p 8080\"",
+    "lint-fix": "eslint src --ext js --fix && eslint examples/js examples/jsm --ext js --ignore-pattern libs --fix",
+    "lint-docs": "eslint docs --ext html",
+    "lint-examples": "eslint examples/js examples/jsm --ext js --ignore-pattern libs",
+    "test-lint": "eslint src --ext js",
+    "test-unit": "npm run unit --prefix test",
+    "test-unit-examples": "npm run unit-examples --prefix test",
+    "test-e2e": "node test/e2e/puppeteer.js",
+    "test-e2e-cov": "node test/e2e/check-coverage.js",
+    "make-screenshot": "node test/e2e/puppeteer.js --make"
   },
   "keywords": [
     "three",
@@ -75,10 +100,11 @@
   "jspm": {
     "files": [
       "package.json",
+      "LICENSE",
       "README.md",
-      "./Library/three.js",
-      "./Library/three.min.js",
-      "./Library/three.module.js"
+      "build/three.js",
+      "build/three.min.js",
+      "build/three.module.js"
     ],
     "directories": {}
   }
