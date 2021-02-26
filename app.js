@@ -1,9 +1,9 @@
-import * as THREE from '../build/three.module.js';
+import * as THREE from './Library/THREE/three.module.js';
 
-import Stats from './jsm/libs/stats.module.js';
+import Stats from './Library/stats.module.js';
 
-import { OrbitControls } from './jsm/controls/OrbitControls.js';
-import { OBJLoader } from './jsm/loaders/OBJLoader.js';
+import { OrbitControls } from './Library/OrbitControls.js';
+import { OBJLoader } from './Library/js/OBJLoader.js';
 
 let container, stats;
 
