@@ -2,8 +2,8 @@ import * as THREE from './Library/THREE/three.module.js';
 
 import Stats from './Library/stats.module.js';
 
-import { OrbitControls } from './Library/OrbitControls.js';
-import { OBJLoader } from './Library/js/OBJLoader.js';
+import { OrbitControls } from './Library/THREE/js/OrbitControls.js';
+import { OBJLoader } from './Library/THREE/js/OBJLoader.js';
 
 let container, stats;
 
@@ -23,7 +23,7 @@ function init() {
     camera.position.z = 2000;
 
     //cubemap
-    const path = 'textures/cube/SwedishRoyalCastle/';
+    const path = './Assets/Images/';
     const format = '.jpg';
     const urls = [
         path + 'px' + format, path + 'nx' + format,
