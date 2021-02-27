@@ -34,6 +34,7 @@
 			let pointLight;
 
 			init();
+			setupXR();
 			animate();
 
 			function init() {
@@ -118,7 +119,8 @@
 			}
 
 			function setupXR() {
-
+				renderer.xr.enabled = true;
+				document.body.appendChild(VRButton.createButton(this.renderer));
 			}
 
 			function onWindowResize() {
