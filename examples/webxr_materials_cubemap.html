@@ -34,7 +34,6 @@
 			let pointLight;
 
 			init();
-			setupXR();
 			animate();
 
 			function init() {
@@ -109,6 +108,8 @@
 				controls.enablePan = false;
 				controls.minPolarAngle = Math.PI / 4;
 				controls.maxPolarAngle = Math.PI / 1.5;
+
+				setupXR();
 
 				//stats
 				stats = new Stats();
