@@ -24,7 +24,7 @@
 			import { OBJLoader } from './jsm/loaders/OBJLoader.js';
 			import { VRButton } from './jsm/webxr/VRButton.js';
 			import { XRControllerModelFactory } from './jsm/webxr/XRControllerModelFactory.js';
-			import { controllers } from './jsm/libs/dat.gui.module.js';
+			//import { controllers } from './jsm/libs/dat.gui.module.js';
 
 			const clock = new THREE.Clock();
 
@@ -32,6 +32,8 @@
 
 			let camera, scene, renderer;
 			let raycaster, workingMatrix, workingVector;
+
+			let controllers;
 
 			let pointLight;
 
@@ -107,7 +109,7 @@
 				renderer.setSize( window.innerWidth, window.innerHeight );
 				container.appendChild( renderer.domElement );
 
-				// controller view
+				// Raycaster
 				raycaster = new THREE.Raycaster();
 				workingMatrix = new THREE.Matrix4();
 				workingVector = new THREE.Vector3();
@@ -134,7 +136,7 @@
 				renderer.xr.enabled = true;
 				document.body.appendChild(VRButton.createButton(renderer));
 
-				this.controllers = buildControllers();
+				controllers = buildControllers();
 			}
 
 			function buildControllers() {
@@ -187,8 +189,8 @@
 			function render() {
 				stats.update();
 
-				if (this.controllers) {
-					this.controllers.forEach((controller) => {
+				if (controllers) {
+					controllers.forEach((controller) => {
 						handleController(controller)
 					});
 				}
