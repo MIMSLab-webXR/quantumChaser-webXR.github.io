@@ -41,7 +41,7 @@
 				container = document.createElement( 'div' );
 				document.body.appendChild( container );
 
-				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 5000 );
+				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 0.1, 5000 );
 				//camera.position.z = 2000;
 				camera.position.set(0, 1.6, 0);
 
@@ -82,15 +82,15 @@
 					const head = object.children[ 0 ];
 
 					head.scale.multiplyScalar( 15 );
-					head.position.y = - 500;
+					head.position.y = 0;
 					head.material = cubeMaterial1;
 
 					const head2 = head.clone();
-					head2.position.x = - 900;
+					head2.position.x = - 3;
 					head2.material = cubeMaterial2;
 
 					const head3 = head.clone();
-					head3.position.x = 900;
+					head3.position.x = 3;
 					head3.material = cubeMaterial3;
 
 					scene.add( head, head2, head3 );
