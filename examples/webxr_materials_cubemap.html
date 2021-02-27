@@ -42,7 +42,8 @@
 				document.body.appendChild( container );
 
 				camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 5000 );
-				camera.position.z = 2000;
+				//camera.position.z = 2000;
+				camera.position.set(0, 1.6, 0);
 
 				//cubemap
 				const path = 'textures/cube/SwedishRoyalCastle/';
@@ -103,11 +104,11 @@
 				container.appendChild( renderer.domElement );
 
 				//controls
-				const controls = new OrbitControls( camera, renderer.domElement );
-				controls.enableZoom = false;
-				controls.enablePan = false;
-				controls.minPolarAngle = Math.PI / 4;
-				controls.maxPolarAngle = Math.PI / 1.5;
+				//const controls = new OrbitControls( camera, renderer.domElement );
+				//controls.enableZoom = false;
+				//controls.enablePan = false;
+				//controls.minPolarAngle = Math.PI / 4;
+				//controls.maxPolarAngle = Math.PI / 1.5;
 
 				setupXR();
 
@@ -135,7 +136,7 @@
 
 			function animate() {
 
-				requestAnimationFrame( animate );
+				/*requestAnimationFrame( animate )*/;
 				render();
 
 			}
@@ -144,6 +145,7 @@
 
 				renderer.render( scene, camera );
 				stats.update();
+				renderer.setAnimationLoop(render);
 
 			}
 
