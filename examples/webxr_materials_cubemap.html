@@ -83,15 +83,16 @@
 
 					head.scale.multiplyScalar( 15 );
 					head.position.y = 0;
+					head.position.z = 2;
 					head.material = cubeMaterial1;
 					head.scale.set(0.01, 0.01, 0.01);
 
 					const head2 = head.clone();
-					head2.position.x = - 3;
+					head2.position.x = - 2;
 					head2.material = cubeMaterial2;
 
 					const head3 = head.clone();
-					head3.position.x = 3;
+					head3.position.x = 2;
 					head3.material = cubeMaterial3;
 
 					scene.add( head, head2, head3 );
