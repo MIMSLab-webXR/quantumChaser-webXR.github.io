@@ -218,7 +218,7 @@
 						position: {
 							top: 70
 						},
-						height: 372,
+						height: 140,
 						backgroundColor: "#bbb",
 						fontColor: "#000"
 					},
@@ -233,14 +233,14 @@
 				}
 
 				const content = {
-					header: "WHE",
-					main: "Welcome to the Walt Head Exhibit!",
+					header: "Welcome to the Walt Head Exhibit!",
+					main: "This application is a test of capabilities of WebXR using Handtracking and VR controllers. ",
 					footer: "Pratik Pradhan"
 				}
 
 				const ui = new CanvasUI(content, css);
-				ui.update();
-				scene.add(ui.mesh);
+				ui.mesh.position(0, 0, -0.1);
+				hand2.attach(ui.mesh);
 			}
 
 			function onWindowResize() {
@@ -261,6 +261,7 @@
 
 			function render() {
 				stats.update();
+				if (renderer.xr.isPresenting) ui.update();
 
 				renderer.render( scene, camera );
 				renderer.setAnimationLoop(render);
