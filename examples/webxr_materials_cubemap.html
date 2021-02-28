@@ -139,6 +139,7 @@
 				//controls.maxPolarAngle = Math.PI / 1.5;
 
 				setupXR();
+				createUI();
 
 				//stats
 				stats = new Stats();
@@ -197,6 +198,14 @@
 
 				controller1.add(line.clone());
 				controller2.add(line.clone());
+			}
+
+			function createUI() {
+				const ui = new CanvasUI();
+				ui.updateElement("body", "Hello World");
+				ui.update();
+				ui.mesh.position.set(0, 1.5, -1.2);
+				scene.add(ui.mesh);
 			}
 
 			function onWindowResize() {
