@@ -204,11 +204,43 @@
 			}
 
 			function createUI() {
-				const ui = new CanvasUI();
-				ui.updateElement("body", "Hello World");
+				const css = {
+					header: {
+						type: "text",
+						position: {
+							top: 0
+						},
+						paddingTop: 30,
+						height: 70
+					},
+					main: {
+						type: "text",
+						position: {
+							top: 70
+						},
+						height: 372,
+						backgroundColor: "#bbb",
+						fontColor: "#000"
+					},
+					footer: {
+						type: "text",
+						position: {
+							bottom: 0
+						},
+						paddingTop: 30,
+						height: 70
+					}
+				}
+
+				const content = {
+					header: "WHE",
+					main: "Welcome to the Walt Head Exhibit!",
+					footer: "Pratik Pradhan"
+				}
+
+				const ui = new CanvasUI(content, css);
 				ui.update();
-				ui.mesh.position.set(0, 1.5, -1.2);
-				hand2.add(ui.mesh);
+				scene.add(ui.mesh);
 			}
 
 			function onWindowResize() {
