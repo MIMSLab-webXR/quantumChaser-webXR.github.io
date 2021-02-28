@@ -36,7 +36,7 @@
 
 			let controllers, highlight;
 
-			let hand1, hand2;
+			let handModels, currentHandModel, hand1, hand2;
 			let controller1, controller2;
 			let controllerGrip1, controllerGrip2;
 			let controls;
@@ -174,14 +174,25 @@
 				controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
 				scene.add(controllerGrip2);
 
+				// Initializing Hand models
+				handModels = {
+					left: null,
+					right: null
+				};
+
+				currentHandModel = {
+					left: 0,
+					right: 0
+				};
+
 				// Hand 1
 				hand1 = renderer.xr.getHand(0);
-				hand1.add(handModelFactory.createHandModel(hand1));
+				hand1.add(handModelFactory.createHandModel(hand1, "oculus"));
 				scene.add(hand1);
 
 				// Hand 2
 				hand2 = renderer.xr.getHand(1);
-				hand2.add(handModelFactory.createHandModel(hand1));
+				hand2.add(handModelFactory.createHandModel(hand2));
 				scene.add(hand2);
 
 				// Handle controllers/hands
