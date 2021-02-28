@@ -24,6 +24,7 @@
 			import { OBJLoader } from './jsm/loaders/OBJLoader.js';
 			import { VRButton } from './jsm/webxr/VRButton.js';
 			import { XRControllerModelFactory } from './jsm/webxr/XRControllerModelFactory.js';
+			import { XRHandModelFactory } from './jsm/webxr/XRHandModelFactory.js';
 			//import { controllers } from './jsm/libs/dat.gui.module.js';
 
 			const clock = new THREE.Clock();
@@ -33,7 +34,12 @@
 			let camera, scene, renderer;
 			let raycaster, workingMatrix, workingVector;
 
-			let controllers;
+			let controllers, highlight;
+
+			let hand1, hand2;
+			let controller1, controller2;
+			let controllerGrip1, controllerGrip2;
+			let controls;
 
 			let pointLight;
 
@@ -66,17 +72,16 @@
 				scene.background = reflectionCube;
 
 				//lights
-				const ambient = new THREE.AmbientLight( 0xffffff );
-				scene.add(ambient);
+				scene.add(new THREE.AmbientLight(0xffffff));
 
-				pointLight = new THREE.PointLight( 0xffffff, 2 );
-				scene.add(pointLight);
+				//pointLight = new THREE.PointLight( 0xffffff, 2 );
+				scene.add(new THREE.PointLight(0xffffff, 2));
 
-				const dlight = new THREE.DirectionalLight(0xffffff);
-				dlight.position.set(1, 1, 1).normalize();
-				scene.add(dlight);
+				//const dlight = new THREE.DirectionalLight(0xffffff);
+				//dlight.position.set(1, 1, 1).normalize();
+				//scene.add(dlight);
 
-				scene.add(new THREE.HemisphereLight(0x606060, 0x404040));
+				//scene.add(new THREE.HemisphereLight(0x606060, 0x404040));
 
 				//materials
 				const cubeMaterial3 = new THREE.MeshLambertMaterial( { color: 0xff6600, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.3 } );
@@ -122,6 +127,10 @@
 
 
 				//controls
+				controls = new OrbitControls(camera, container);
+				controls.target.set(0, 1.6, 0);
+				controls.update();
+
 				//const controls = new OrbitControls( camera, renderer.domElement );
 				//controls.enableZoom = false;
 				//controls.enablePan = false;
@@ -134,46 +143,65 @@
 				stats = new Stats();
 				container.appendChild( stats.dom );
 
-				window.addEventListener( 'resize', onWindowResize );
-
+				window.addEventListener('resize', onWindowResize);
 			}
 
 			function setupXR() {
+				const button = new VRButton(renderer, {
+					sessionInit: {
+						optionalFeatures: ['local-floor', 'bounded-floor', 'hand-tracking']
+					}
+				});
 				renderer.xr.enabled = true;
 				document.body.appendChild(VRButton.createButton(renderer));
 
-				controllers = buildControllers();
-			}
-
-			function buildControllers() {
 				const controllerModelFactory = new XRControllerModelFactory();
 
+				// Controllers and Hand Tracking
+
+				const controllerModelFactory = new XRControllerModelFactory();
+				const handModelFactory = new XRHandModelFactory().setPath("./models/fbx/");
+
+				// Controller 1
+				controller1 = renderer.xr.getController(0);
+				scene.add(controller1);
+
+				// Controller 2
+				controller2 = renderer.xr.getController(1);
+				scene.add(controller2);
+
+				// Controller Grip 1
+				controllerGrip1 = renderer.xr.getControllerGrip(0);
+				controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
+				scene.add(controllerGrip1);
+
+				// Controller Grip 2
+				controllerGrip2 = renderer.xr.getControllerGrip(1);
+				controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
+				scene.add(controllerGrip2);
+
+				// Hand 1
+				hand1 = renderer.xr.getHand(0);
+				hand1.add(handModelFactory.createHandModel(hand1));
+				scene.add(hand1);
+
+				// Hand 2
+				hand2 = renderer.xr.getHand(1);
+				hand2.add(handModelFactory.createHandModel(hand1));
+				scene.add(hand2);
+
+				// Handle controllers/hands
 				const geometry = new THREE.BufferGeometry().setFromPoints([
 					new THREE.Vector3(0, 0, 0),
 					new THREE.Vector3(0, 0, -1)
 				]);
+
 				const line = new THREE.Line(geometry);
 				line.name = 'line';
-				line.scale.z = 0;
+				line.scale.z = 5;
 
-				const controllers = [];
-				for (let i = 0; i <= 1; i++) {
-					const controller = renderer.xr.getController(i);
-					controller.add(line.clone());
-					controller.userData.selectPressed = false;
-					scene.add(controller);
-					controllers.push(controller);
-
-					const grip = renderer.xr.getControllerGrip(i);
-					grip.add(controllerModelFactory.createControllerModel(grip));
-					scene.add(grip);
-				}
-
-				return controllers;
-			}
-
-			function handleController(controller) {
-
+				controller1.add(line.clone());
+				controller2.add(line.clone());
 			}
 
 			function onWindowResize() {
@@ -194,12 +222,6 @@
 
 			function render() {
 				stats.update();
-
-				if (controllers) {
-					controllers.forEach((controller) => {
-						handleController(controller)
-					});
-				}
 
 				renderer.render( scene, camera );
 				renderer.setAnimationLoop(render);
