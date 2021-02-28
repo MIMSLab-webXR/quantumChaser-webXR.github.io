@@ -12,7 +12,7 @@
 		<div id="info">
 			<a href="https://threejs.org" target="_blank" rel="noopener">three.js</a> - cube mapping demo.<br />
 			Texture by <a href="http://www.humus.name/index.php?page=Textures" target="_blank" rel="noopener">Humus</a>, Walt Disney head by <a href="http://davidoreilly.com/post/18087489343/disneyhead" target="_blank" rel="noopener">David OReilly</a><br />
-			WebXR Hand Tracking Adaptation by Pratik Pradhan
+			WebXR Hand Tracking Adaptation by <a href="https://github.com/quantumChaser-webXR" target="_blank" rel="noopener">Pratik Pradhan</a>
 		</div>
 
 		<script type="module">
@@ -174,17 +174,6 @@
 				controllerGrip2 = renderer.xr.getControllerGrip(1);
 				controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
 				scene.add(controllerGrip2);
-
-				// Initializing Hand models
-				handModels = {
-					left: null,
-					right: null
-				};
-
-				currentHandModel = {
-					left: 0,
-					right: 0
-				};
 
 				// Hand 1
 				hand1 = renderer.xr.getHand(0);
