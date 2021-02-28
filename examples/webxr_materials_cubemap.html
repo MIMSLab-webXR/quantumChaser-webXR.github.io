@@ -43,6 +43,8 @@
 			let controllerGrip1, controllerGrip2;
 			let controls;
 
+			let ui;
+
 			let pointLight;
 
 			init();
@@ -140,7 +142,6 @@
 				//controls.maxPolarAngle = Math.PI / 1.5;
 
 				setupXR();
-				//createUI();
 
 				//stats
 				stats = new Stats();
@@ -200,7 +201,7 @@
 				controller1.add(line.clone());
 				controller2.add(line.clone());
 
-				createUI();
+				ui = createUI();
 			}
 
 			function createUI() {
@@ -239,9 +240,11 @@
 				}
 
 				const ui = new CanvasUI(content, css);
-				ui.update();
+				//ui.update();
 				ui.mesh.position.set(0, 1.5, -1.2);
 				hand2.attach(ui.mesh);
+
+				return ui;
 			}
 
 			function onWindowResize() {
@@ -262,6 +265,7 @@
 
 			function render() {
 				stats.update();
+				if(renderer.xr.isPresenting) ui.update();
 
 				renderer.render( scene, camera );
 				renderer.setAnimationLoop(render);
