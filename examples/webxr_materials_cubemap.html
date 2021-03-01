@@ -152,15 +152,7 @@
 
 			function setupXR() {
 				renderer.xr.enabled = true;
-				document.body.appendChild(VRButton.createButton(renderer, {
-					sessionInit: {
-						optionalFeatures: [
-							'local-floor',
-							'bounded-floor',
-							'hand-tracking'
-						]
-					}
-				}));
+				document.body.appendChild(VRButton.createButton(renderer));
 
 				// Controllers and Hand Tracking
 
