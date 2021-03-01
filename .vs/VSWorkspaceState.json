@@ -1,13 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\Assets",
-    "\\Assets\\Images",
-    "\\Assets\\Models\\BCh600",
-    "\\Assets\\Models\\LearJet25",
-    "\\Library\\THREE",
-    "\\Library\\THREE\\jsm"
+    "\\examples",
+    "\\examples\\jsm",
+    "\\examples\\jsm\\canvas"
   ],
-  "SelectedNode": "\\app.js",
+  "SelectedNode": "\\examples\\jsm\\canvas\\CanvasUI.js",
   "PreviewInSolutionExplorer": false
 }
